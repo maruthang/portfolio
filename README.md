@@ -20,18 +20,18 @@ Open `http://localhost:3000`.
 
 ### Useful scripts
 
-| Script | Purpose |
-|---|---|
-| `npm run dev` | Dev server (regenerates `tokens.css` first via `predev`) |
-| `npm run build` | Production build (regenerates `tokens.css` first via `prebuild`) |
-| `npm run tokens:build` | Regenerate `src/design-system/tokens.css` from TS sources |
-| `npm run typecheck` | TypeScript strict check, no emit |
-| `npm run format` | Prettier write |
-| `npm run format:check` | Prettier check (CI) |
-| `npm test` | Vitest unit tests |
-| `npm run test:e2e` | Playwright e2e (builds + serves prod, then runs Chromium) |
-| `npm run ladle` | Component preview (Ladle) |
-| `npm run ladle:build` | Static build of stories |
+| Script                 | Purpose                                                          |
+| ---------------------- | ---------------------------------------------------------------- |
+| `npm run dev`          | Dev server (regenerates `tokens.css` first via `predev`)         |
+| `npm run build`        | Production build (regenerates `tokens.css` first via `prebuild`) |
+| `npm run tokens:build` | Regenerate `src/design-system/tokens.css` from TS sources        |
+| `npm run typecheck`    | TypeScript strict check, no emit                                 |
+| `npm run format`       | Prettier write                                                   |
+| `npm run format:check` | Prettier check (CI)                                              |
+| `npm test`             | Vitest unit tests                                                |
+| `npm run test:e2e`     | Playwright e2e (builds + serves prod, then runs Chromium)        |
+| `npm run ladle`        | Component preview (Ladle)                                        |
+| `npm run ladle:build`  | Static build of stories                                          |
 
 ### Project layout
 
