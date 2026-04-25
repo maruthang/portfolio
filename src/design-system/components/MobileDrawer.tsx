@@ -51,11 +51,11 @@ export function MobileDrawer({ links }: { links: DrawerLink[] }) {
             aria-modal="true"
             aria-label="Mobile navigation"
             className={cn(
-              'fixed right-0 top-0 z-50 flex h-full w-full max-w-xs flex-col border-l border-[var(--border)] bg-[var(--bg)] p-6 shadow-xl md:hidden',
+              'fixed top-0 right-0 z-50 flex h-full w-full max-w-xs flex-col border-l border-[var(--border)] bg-[var(--bg)] p-6 shadow-xl md:hidden',
             )}
           >
             <div className="flex items-center justify-between">
-              <span className="font-mono text-sm uppercase tracking-wide text-[var(--muted)]">
+              <span className="font-mono text-sm tracking-wide text-[var(--muted)] uppercase">
                 Menu
               </span>
               <button
