@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# portfolio
 
-## Getting Started
+Personal portfolio for Maruthan G.
 
-First, run the development server:
+- **Live**: https://portfolio-tawny-two-72.vercel.app/
+- **Stack**: Next.js 15, React 19, Tailwind v4, TypeScript (strict)
+- **Design system**: Token-driven (TS source → CSS variables → Tailwind theme); change one token, propagates everywhere.
+- **Tested**: Vitest unit (22 tests) + Playwright e2e (1 smoke test). CI runs typecheck, format, unit, build, e2e on every push.
+
+Implementation plans live in the parent planning repo at [`MaruthanG/MaruthanG/docs/superpowers/plans/`](https://github.com/maruthang/MaruthanG/tree/main/docs/superpowers/plans).
+
+## Local development
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Useful scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Script | Purpose |
+|---|---|
+| `npm run dev` | Dev server (regenerates `tokens.css` first via `predev`) |
+| `npm run build` | Production build (regenerates `tokens.css` first via `prebuild`) |
+| `npm run tokens:build` | Regenerate `src/design-system/tokens.css` from TS sources |
+| `npm run typecheck` | TypeScript strict check, no emit |
+| `npm run format` | Prettier write |
+| `npm run format:check` | Prettier check (CI) |
+| `npm test` | Vitest unit tests |
+| `npm run test:e2e` | Playwright e2e (builds + serves prod, then runs Chromium) |
+| `npm run ladle` | Component preview (Ladle) |
+| `npm run ladle:build` | Static build of stories |
 
-## Learn More
+### Project layout
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+src/
+  app/                       Next.js App Router pages, layout, providers
+  design-system/
+    tokens/                  TypeScript token sources (single source of truth)
+    tokens.css               Generated CSS variables (gitignored)
+    utils/cn.ts              clsx + tailwind-merge wrapper
+    components/              Button, Card, Badge, ThemeToggle
+    layout/                  Header, Footer
+    stories/                 Ladle component stories
+scripts/
+  generate-tokens-css.ts     Token → CSS variable generator
+tests/                       Vitest unit + Playwright e2e
+```
