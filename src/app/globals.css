@@ -258,3 +258,25 @@ textarea:focus-visible {
     display: none !important;
   }
 }
+
+/* Accent palette variants — switch by setting data-accent on <html> */
+[data-accent='blue'] {
+  --color-brand-500: #58a6ff;
+  --color-brand-300: #66abff;
+  --color-brand-600: #1f7ae0;
+}
+[data-accent='cyan'] {
+  --color-brand-500: #00e5c8;
+  --color-brand-300: #5ef2dd;
+  --color-brand-600: #00b39d;
+}
+[data-accent='orange'] {
+  --color-brand-500: #ff7a45;
+  --color-brand-300: #ffa07a;
+  --color-brand-600: #e0561c;
+}
+[data-accent='magenta'] {
+  --color-brand-500: #ff3da6;
+  --color-brand-300: #ff7ec0;
+  --color-brand-600: #d01885;
+}
