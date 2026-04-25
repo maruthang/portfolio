@@ -21,7 +21,16 @@ export const projects: Project[] = [
     summary:
       'B2B marketplace with reverse-auction bidding, KYC/seller verification, AI-powered product creation (AWS Lambda), live chat, and dispute management. 17+ custom WordPress plugins, full Docker Compose infra, and a backup → deploy → rollback CI/CD pipeline.',
     status: 'live',
-    tech: ['WordPress', 'WooCommerce', 'PHP', 'MariaDB', 'Redis', 'Docker', 'GitLab CI', 'AWS Lambda'],
+    tech: [
+      'WordPress',
+      'WooCommerce',
+      'PHP',
+      'MariaDB',
+      'Redis',
+      'Docker',
+      'GitLab CI',
+      'AWS Lambda',
+    ],
     featured: true,
   },
   {
@@ -39,7 +48,16 @@ export const projects: Project[] = [
     summary:
       'Multi-channel analytics platform aggregating 8+ e-commerce and quick-commerce channels. Real-time dashboards, dynamic report builder, cohort analysis, 2FA/MFA (TOTP), CASL RBAC, and 192+ API endpoints.',
     status: 'live',
-    tech: ['NestJS 10', 'Next.js 15', 'React 18', 'PostgreSQL', 'Redis', 'BullMQ', 'Socket.io', 'D3.js'],
+    tech: [
+      'NestJS 10',
+      'Next.js 15',
+      'React 18',
+      'PostgreSQL',
+      'Redis',
+      'BullMQ',
+      'Socket.io',
+      'D3.js',
+    ],
     featured: true,
   },
   {
@@ -48,7 +66,14 @@ export const projects: Project[] = [
     summary:
       'Mobile app, admin dashboard, and marketing site for a fitness platform. Trainer bookings, workout planning, AI coaching (GPT-4o), social fitness, real-time messaging, payment processing, push notifications.',
     status: 'live',
-    tech: ['NestJS 10', 'React Native + Expo 51', 'Next.js 15', 'PostgreSQL', 'Socket.io', 'OpenAI GPT-4o'],
+    tech: [
+      'NestJS 10',
+      'React Native + Expo 51',
+      'Next.js 15',
+      'PostgreSQL',
+      'Socket.io',
+      'OpenAI GPT-4o',
+    ],
     featured: true,
   },
   {
