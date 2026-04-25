@@ -1,6 +1,9 @@
+'use client';
+
 import { ArrowUpRight } from 'lucide-react';
 import { Card } from '@/design-system/components/Card';
 import { Badge } from '@/design-system/components/Badge';
+import { useMagneticHover } from '@/design-system/motion/useMagneticHover';
 import type { Project } from '@/content/projects';
 
 const statusVariant: Record<Project['status'], 'default' | 'success' | 'warning' | 'error'> = {
@@ -18,8 +21,12 @@ const statusLabel: Record<Project['status'], string> = {
 };
 
 export function ProjectCard({ project }: { project: Project }) {
+  const ref = useMagneticHover<HTMLDivElement>(0.08);
   return (
-    <Card className="flex flex-col gap-4 transition-colors hover:border-[var(--color-brand-500)]/60">
+    <Card
+      ref={ref}
+      className="flex flex-col gap-4 transition-colors transition-transform duration-300 ease-out hover:border-[var(--color-brand-500)]/60"
+    >
       <div className="flex items-start justify-between gap-3">
         <h3 className="font-mono text-lg leading-tight font-semibold text-[var(--fg)]">
           {project.title}
