@@ -203,3 +203,58 @@ textarea:focus-visible {
 .cc-dot.cc-dot--visible {
   opacity: 1;
 }
+
+/* Boot loader */
+.boot-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  background: var(--bg);
+  pointer-events: none;
+  transition:
+    opacity 350ms ease-out,
+    visibility 0s linear 350ms;
+}
+.boot-loader.boot-loader--gone {
+  opacity: 0;
+  visibility: hidden;
+}
+.boot-counter {
+  font-family: var(--font-geist-mono);
+  font-size: clamp(3rem, 8vw, 6rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--color-brand-500);
+  line-height: 1;
+}
+.boot-bar {
+  width: 200px;
+  height: 2px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.boot-fill {
+  width: 0%;
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-brand-500), var(--color-brand-300));
+  border-radius: 2px;
+  transition: width 80ms linear;
+}
+.boot-text {
+  font-family: var(--font-geist-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+@media (prefers-reduced-motion: reduce) {
+  .boot-loader {
+    display: none !important;
+  }
+}

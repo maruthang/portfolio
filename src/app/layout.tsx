@@ -5,6 +5,7 @@ import { Providers } from './providers';
 import { Header } from '@/design-system/layout/Header';
 import { Footer } from '@/design-system/layout/Footer';
 import { CustomCursor } from '@/design-system/components/CustomCursor';
+import { BootLoader } from '@/design-system/components/BootLoader';
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
 const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] });
@@ -18,6 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <BootLoader />
         <a href="#main-content" className="skip-link">
           Skip to main content
         </a>
