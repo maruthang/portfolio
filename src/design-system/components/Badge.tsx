@@ -5,8 +5,10 @@ export type BadgeVariant = 'default' | 'success' | 'warning' | 'error';
 
 const variants: Record<BadgeVariant, string> = {
   default: 'bg-[var(--surface)] text-[var(--fg)] border-[var(--border)]',
-  success: 'bg-[var(--color-success)]/10 text-[var(--color-success)] border-[var(--color-success)]/20',
-  warning: 'bg-[var(--color-warning)]/10 text-[var(--color-warning)] border-[var(--color-warning)]/20',
+  success:
+    'bg-[var(--color-success)]/10 text-[var(--color-success)] border-[var(--color-success)]/20',
+  warning:
+    'bg-[var(--color-warning)]/10 text-[var(--color-warning)] border-[var(--color-warning)]/20',
   error: 'bg-[var(--color-error)]/10 text-[var(--color-error)] border-[var(--color-error)]/20',
 };
 

@@ -1,4 +1,11 @@
-import { Button, Card, CardHeader, CardTitle, CardDescription, Badge } from '@/design-system/components';
+import {
+  Button,
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  Badge,
+} from '@/design-system/components';
 
 export default function HomePage() {
   return (
@@ -20,7 +27,9 @@ export default function HomePage() {
         <Card>
           <CardHeader>
             <CardTitle>Design system smoke test</CardTitle>
-            <CardDescription>If this card is styled and the badges below render, tokens are wired correctly.</CardDescription>
+            <CardDescription>
+              If this card is styled and the badges below render, tokens are wired correctly.
+            </CardDescription>
           </CardHeader>
           <div className="flex flex-wrap gap-2">
             <Badge>default</Badge>

@@ -47,7 +47,8 @@
   --surface: var(--color-neutral-900);
 }
 
-html, body {
+html,
+body {
   background: var(--bg);
   color: var(--fg);
   font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;

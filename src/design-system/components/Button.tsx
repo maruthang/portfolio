@@ -15,7 +15,8 @@ const base =
 const variants: Record<ButtonVariant, string> = {
   primary: 'bg-[var(--color-brand-500)] text-white hover:bg-[var(--color-brand-600)]',
   ghost: 'bg-transparent text-[var(--fg)] hover:bg-[var(--surface)]',
-  outline: 'bg-transparent border border-[var(--border)] text-[var(--fg)] hover:bg-[var(--surface)]',
+  outline:
+    'bg-transparent border border-[var(--border)] text-[var(--fg)] hover:bg-[var(--surface)]',
 };
 
 const sizes: Record<ButtonSize, string> = {

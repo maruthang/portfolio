@@ -3,7 +3,19 @@ import { colors, spacing, typography } from '@/design-system/tokens';
 
 describe('design tokens', () => {
   it('exposes the brand color scale 50-950', () => {
-    const expectedKeys = ['50', '100', '200', '300', '400', '500', '600', '700', '800', '900', '950'];
+    const expectedKeys = [
+      '50',
+      '100',
+      '200',
+      '300',
+      '400',
+      '500',
+      '600',
+      '700',
+      '800',
+      '900',
+      '950',
+    ];
     expect(Object.keys(colors.brand)).toEqual(expectedKeys);
   });
 
