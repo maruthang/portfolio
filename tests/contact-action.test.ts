@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { sendContactMessage, contactSchema } from '@/app/actions/contact';
+import { sendContactMessage } from '@/app/actions/contact';
+import { contactSchema } from '@/app/actions/contact-schema';
 
 vi.mock('resend', () => ({
   Resend: class {

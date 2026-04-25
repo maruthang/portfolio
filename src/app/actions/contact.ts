@@ -1,21 +1,8 @@
 'use server';
 
-import { z } from 'zod';
 import { Resend } from 'resend';
 import { contact } from '@/content/contact';
-
-export const contactSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  email: z.string().email('Valid email required'),
-  message: z.string().min(10, 'Message must be at least 10 characters'),
-});
-
-export type ContactInput = z.infer<typeof contactSchema>;
-
-export type ContactResult =
-  | { status: 'ok' }
-  | { status: 'fallback'; mailtoHref: string }
-  | { status: 'error'; fieldErrors?: Record<string, string[]>; message?: string };
+import { contactSchema, type ContactInput, type ContactResult } from './contact-schema';
 
 export async function sendContactMessage(input: ContactInput): Promise<ContactResult> {
   const parsed = contactSchema.safeParse(input);
