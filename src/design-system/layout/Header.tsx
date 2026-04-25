@@ -1,5 +1,12 @@
 import Link from 'next/link';
 import { ThemeToggle } from '@/design-system/components/ThemeToggle';
+import { MobileDrawer } from '@/design-system/components/MobileDrawer';
+
+const navLinks = [
+  { href: '/projects', label: 'Projects' },
+  { href: '/blog', label: 'Blog' },
+  { href: '/oss', label: 'OSS' },
+];
 
 export function Header() {
   return (
@@ -8,18 +15,17 @@ export function Header() {
         <Link href="/" className="font-mono text-sm font-semibold">
           maruthan<span className="text-[var(--color-brand-500)]">.dev</span>
         </Link>
-        <nav className="flex items-center gap-6 text-sm">
-          <Link href="/projects" className="text-[var(--muted)] hover:text-[var(--fg)]">
-            Projects
-          </Link>
-          <Link href="/blog" className="text-[var(--muted)] hover:text-[var(--fg)]">
-            Blog
-          </Link>
-          <Link href="/oss" className="text-[var(--muted)] hover:text-[var(--fg)]">
-            OSS
-          </Link>
-          <ThemeToggle />
+        <nav className="hidden items-center gap-6 text-sm md:flex">
+          {navLinks.map((l) => (
+            <Link key={l.href} href={l.href} className="text-[var(--muted)] hover:text-[var(--fg)]">
+              {l.label}
+            </Link>
+          ))}
         </nav>
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <MobileDrawer links={navLinks} />
+        </div>
       </div>
     </header>
   );
