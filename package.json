@@ -12,7 +12,10 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:ui": "vitest --ui"
+    "test:ui": "vitest --ui",
+    "tokens:build": "tsx scripts/generate-tokens-css.ts",
+    "prebuild": "npm run tokens:build",
+    "predev": "npm run tokens:build"
   },
   "dependencies": {
     "next": "15.5.15",
@@ -35,6 +38,7 @@
     "prettier": "^3.8.3",
     "prettier-plugin-tailwindcss": "^0.7.3",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5",
     "vitest": "^4.1.5"
   }
