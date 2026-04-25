@@ -13,6 +13,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
+    "test:e2e": "playwright test",
     "tokens:build": "tsx scripts/generate-tokens-css.ts",
     "prebuild": "npm run tokens:build",
     "predev": "npm run tokens:build",
@@ -29,6 +30,7 @@
   },
   "devDependencies": {
     "@ladle/react": "^5.1.1",
+    "@playwright/test": "^1.59.1",
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",

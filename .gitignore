@@ -42,3 +42,7 @@ next-env.d.ts
 
 # generated tokens
 src/design-system/tokens.css
+
+# playwright
+playwright-report
+test-results
