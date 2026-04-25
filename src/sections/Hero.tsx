@@ -1,7 +1,11 @@
-import { Typewriter } from '@/design-system/components/Typewriter';
-import { Badge } from '@/design-system/components/Badge';
-import { AvailabilityPing } from '@/design-system/components/AvailabilityPing';
+'use client';
+
+import { motion } from 'framer-motion';
 import { HeroBackground } from '@/design-system/visuals/HeroBackground';
+import { AvailabilityPing } from '@/design-system/components/AvailabilityPing';
+import { Badge } from '@/design-system/components/Badge';
+import { Typewriter } from '@/design-system/components/Typewriter';
+import { useReducedMotion } from '@/design-system/motion/reducedMotion';
 import { contact } from '@/content/contact';
 
 const ROLES = ['Full Stack Developer', 'OSS Contributor', 'Bug Hunter', 'Tooling Builder'];
@@ -12,21 +16,57 @@ const primaryStyles = `${buttonBase} bg-[var(--color-brand-500)] text-white hove
 const outlineStyles = `${buttonBase} border border-[var(--border)] text-[var(--fg)] hover:bg-[var(--surface)]`;
 const ghostStyles = `${buttonBase} text-[var(--fg)] hover:bg-[var(--surface)]`;
 
+const containerVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.12, delayChildren: 0.1 } },
+};
+
+const lineVariants = {
+  hidden: { opacity: 0, y: 24, clipPath: 'inset(100% 0 0 0)' },
+  visible: {
+    opacity: 1,
+    y: 0,
+    clipPath: 'inset(0 0 0 0)',
+    transition: { duration: 0.6, ease: [0.4, 0, 0.2, 1] as [number, number, number, number] },
+  },
+};
+
 export function Hero() {
+  const reduced = useReducedMotion();
+
   return (
     <section className="relative py-20 sm:py-32">
       <HeroBackground />
+
       <div className="flex flex-wrap items-center gap-2 text-xs">
         <AvailabilityPing>{contact.availability}</AvailabilityPing>
         <Badge>{contact.location}</Badge>
       </div>
 
-      <h1 className="mt-6 font-mono text-4xl leading-tight font-bold sm:text-6xl">
-        Hi, I&apos;m <span className="text-[var(--color-brand-500)]">Maruthan</span>
-        <span className="block text-[var(--muted)]">
-          <Typewriter words={ROLES} />
-        </span>
-      </h1>
+      {reduced ? (
+        <h1 className="mt-6 font-mono text-4xl leading-tight font-bold sm:text-6xl">
+          <span className="block">
+            Hi, I&apos;m <span className="text-[var(--color-brand-500)]">Maruthan</span>
+          </span>
+          <span className="block text-[var(--muted)]">
+            <Typewriter words={ROLES} />
+          </span>
+        </h1>
+      ) : (
+        <motion.h1
+          className="mt-6 font-mono text-4xl leading-tight font-bold sm:text-6xl"
+          initial="hidden"
+          animate="visible"
+          variants={containerVariants}
+        >
+          <motion.span variants={lineVariants} className="block">
+            Hi, I&apos;m <span className="text-[var(--color-brand-500)]">Maruthan</span>
+          </motion.span>
+          <motion.span variants={lineVariants} className="block text-[var(--muted)]">
+            <Typewriter words={ROLES} />
+          </motion.span>
+        </motion.h1>
+      )}
 
       <p className="mt-6 max-w-2xl text-lg text-[var(--muted)]">
         Full-stack developer at Finstein shipping production web and mobile apps across NestJS,
