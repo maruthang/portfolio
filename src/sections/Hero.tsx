@@ -1,5 +1,6 @@
 import { Typewriter } from '@/design-system/components/Typewriter';
 import { Badge } from '@/design-system/components/Badge';
+import { AvailabilityPing } from '@/design-system/components/AvailabilityPing';
 import { contact } from '@/content/contact';
 
 const ROLES = ['Full Stack Developer', 'OSS Contributor', 'Bug Hunter', 'Tooling Builder'];
@@ -14,7 +15,7 @@ export function Hero() {
   return (
     <section className="py-20 sm:py-32">
       <div className="flex flex-wrap items-center gap-2 text-xs">
-        <Badge variant="success">{contact.availability}</Badge>
+        <AvailabilityPing>{contact.availability}</AvailabilityPing>
         <Badge>{contact.location}</Badge>
       </div>
 
