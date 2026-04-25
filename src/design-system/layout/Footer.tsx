@@ -1,4 +1,5 @@
 import { contact } from '@/content/contact';
+import { BackToTop } from '@/design-system/components/BackToTop';
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -31,19 +32,24 @@ export function Footer() {
           </ul>
         </div>
         <div>
-          <p className="font-mono text-xs tracking-wide uppercase">Built with</p>
-          <p className="mt-2">Next.js · TypeScript · Tailwind v4</p>
-          <p>
-            <a
-              href="https://github.com/maruthang/portfolio"
-              target="_blank"
-              rel="noreferrer"
-              className="hover:text-[var(--fg)]"
-            >
-              View source
-            </a>{' '}
-            · Last build {built}
-          </p>
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="font-mono text-xs tracking-wide uppercase">Built with</p>
+              <p className="mt-2">Next.js · TypeScript · Tailwind v4</p>
+              <p>
+                <a
+                  href="https://github.com/maruthang/portfolio"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="hover:text-[var(--fg)]"
+                >
+                  View source
+                </a>{' '}
+                · Last build {built}
+              </p>
+            </div>
+            <BackToTop />
+          </div>
         </div>
       </div>
     </footer>
