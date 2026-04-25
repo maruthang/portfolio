@@ -1,6 +1,7 @@
 import { Typewriter } from '@/design-system/components/Typewriter';
 import { Badge } from '@/design-system/components/Badge';
 import { AvailabilityPing } from '@/design-system/components/AvailabilityPing';
+import { HeroBackground } from '@/design-system/visuals/HeroBackground';
 import { contact } from '@/content/contact';
 
 const ROLES = ['Full Stack Developer', 'OSS Contributor', 'Bug Hunter', 'Tooling Builder'];
@@ -13,7 +14,8 @@ const ghostStyles = `${buttonBase} text-[var(--fg)] hover:bg-[var(--surface)]`;
 
 export function Hero() {
   return (
-    <section className="py-20 sm:py-32">
+    <section className="relative py-20 sm:py-32">
+      <HeroBackground />
       <div className="flex flex-wrap items-center gap-2 text-xs">
         <AvailabilityPing>{contact.availability}</AvailabilityPing>
         <Badge>{contact.location}</Badge>
