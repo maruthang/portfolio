@@ -117,3 +117,22 @@ textarea:focus-visible {
     animation: none !important;
   }
 }
+
+/* Tech marquee — auto-scrolling row */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee-track {
+  animation: marquee 40s linear infinite;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+}
