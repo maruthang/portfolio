@@ -1,0 +1,44 @@
+---
+title: Conversational Commerce Bot
+slug: conversational-commerce-bot
+summary: Production-grade WhatsApp ↔ WooCommerce bridge — customers browse, manage carts, place orders, request quotes, and resolve disputes via WhatsApp.
+role: Full-stack engineer
+dates: 2024 – present
+tech:
+  - NestJS 11
+  - TypeScript
+  - SQLite
+  - Express 5
+  - Meta WhatsApp Cloud API
+status: live
+---
+
+## Problem
+
+The B2B marketplace needed a low-friction channel for buyers in regions where browser usage is secondary to messaging. The bot had to support real-money transactions, idempotent message handling under retries, and multi-step conversation state without losing context across hours-long buyer sessions.
+
+## Solution
+
+A NestJS 11 service that consumes Meta's WhatsApp Cloud API webhooks. Verifies signatures via HMAC-SHA256 on every event, stores message IDs in SQLite for idempotency, and uses a state-machine pattern to track each customer's current step (browsing → cart → quote-request → checkout → dispute). All actions write back to WooCommerce via REST APIs, so the WhatsApp flow and the web flow share the same orders, carts, and inventory.
+
+## Architecture
+
+- NestJS modules for `webhooks`, `conversation`, `commerce`, `disputes`, `notifications`.
+- SQLite for the bot's own state (idempotency keys, conversation steps); WooCommerce remains the source of truth for orders.
+- HMAC-SHA256 signature verification on every inbound webhook.
+- State machine implemented as a `ConversationService` keyed on customer phone number.
+
+## Key technical decisions
+
+- **SQLite** instead of Postgres — the state is small, ephemeral, and node-local; SQLite + a single Docker volume removed an entire deployment dependency.
+- **Idempotency keys** per Meta message ID — Meta retries delivery; without dedupe we'd double-charge or duplicate orders.
+- **WhatsApp as a thin client** — all business logic lives in WooCommerce; the bot translates intents.
+
+## Outcomes
+
+- Buyers can complete the full purchase flow via WhatsApp, including reverse-auction bid submissions and dispute escalations.
+- Webhook handler verified to be idempotent under Meta's documented retry envelope.
+
+## What's next
+
+- Add an internal admin web UI for monitoring active conversations and replaying stuck flows.

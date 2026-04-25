@@ -1,0 +1,47 @@
+---
+title: Cross-Platform Fitness Ecosystem
+slug: fitness-ecosystem
+summary: Mobile app, admin dashboard, and marketing website for a fitness platform — trainer bookings, AI coaching, social fitness, real-time messaging, payments, push notifications.
+role: Full-stack engineer
+dates: 2024 – present
+tech:
+  - NestJS 10
+  - React Native
+  - Expo 51
+  - Next.js 15
+  - PostgreSQL
+  - Socket.io
+  - OpenAI GPT-4o
+status: live
+---
+
+## Problem
+
+A fitness startup needed a three-surface product (mobile app for end users, admin dashboard for trainers/ops, marketing site for acquisition) that all share a backend, a single auth model, and consistent state across surfaces.
+
+## Solution
+
+A NestJS 10 backend behind a single PostgreSQL primary, exposing REST + Socket.io. The mobile app is React Native + Expo 51; the admin dashboard and marketing site are Next.js 15. AI coaching uses OpenAI GPT-4o through a small `coach` module that templates the user's workout history into prompts. Buddy system, real-time messaging, and trainer bookings all share the same realtime layer.
+
+## Architecture
+
+- One NestJS backend serving three frontends.
+- Expo for mobile (iOS + Android) — push notifications via Expo's push service.
+- Next.js 15 for both web surfaces; admin uses RSC heavily, marketing is mostly static.
+- Socket.io rooms per conversation (trainer↔client) and per buddy-group.
+- Stripe for payments.
+
+## Key technical decisions
+
+- **Expo over bare React Native** — OTA updates and the Expo push pipeline saved weeks vs hand-rolling APN/FCM.
+- **GPT-4o over fine-tuned models** — at this stage of the product, prompt templating + retrieval beats the cost of training; revisit when traffic justifies.
+- **Single backend** — no microservices for v1; the surface area is wide but the load is narrow.
+
+## Outcomes
+
+- Three surfaces shipped from a shared API; consistent auth + state.
+
+## What's next
+
+- Move heavy AI workloads off the request path to a queue.
+- Add a trainer-side analytics dashboard.

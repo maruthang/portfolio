@@ -1,0 +1,46 @@
+---
+title: Health & Wellness Mobile App
+slug: health-wellness-app
+summary: Hybrid mobile app for hydration tracking, step counting, and health-goal management with Keycloak SSO and Firebase push notifications.
+role: Full-stack engineer
+dates: 2023 – 2024
+tech:
+  - NestJS 10
+  - Angular 18
+  - Ionic 8
+  - Capacitor 6
+  - MySQL
+  - Keycloak
+  - Firebase
+status: live
+---
+
+## Problem
+
+An employer-sponsored wellness program needed a single mobile app that integrated hydration logging, step tracking, and goal management — gated behind the company's existing Keycloak SSO so employees could sign in once and have a unified profile across HR systems.
+
+## Solution
+
+Ionic 8 + Capacitor 6 for the hybrid mobile shell, Angular 18 for the UI layer, NestJS 10 for the backend. Keycloak handles auth (OIDC) so the same identities flow across the wellness app and HR portals. Firebase Cloud Messaging delivers push notifications for hydration reminders and goal nudges.
+
+## Architecture
+
+- Ionic + Capacitor for cross-platform deployment from a single Angular codebase.
+- Angular 18 with standalone components.
+- NestJS 10 with a `wellness`, `goals`, `notifications` module split.
+- Keycloak as the OIDC provider; backend validates tokens via JWKS.
+- MySQL primary; daily aggregations via a scheduled job.
+
+## Key technical decisions
+
+- **Ionic + Capacitor over React Native** — the team's Angular fluency, plus the need to embed inside an existing Angular HR ecosystem, made this the lower-friction choice.
+- **Keycloak over a custom OAuth server** — the company already ran Keycloak for HR; reusing it kept access policy in one place.
+
+## Outcomes
+
+- Single hybrid app delivered to iOS + Android from one codebase.
+- Push notifications + SSO live and stable.
+
+## What's next
+
+- Add an offline-first cache for hydration logs (current behavior loses entries with no network).

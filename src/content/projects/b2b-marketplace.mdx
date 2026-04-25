@@ -1,0 +1,52 @@
+---
+title: B2B Multi-Vendor Marketplace
+slug: b2b-marketplace
+summary: B2B marketplace with reverse-auction bidding, KYC verification, AI-powered product creation, live chat, and dispute management — built on WordPress + WooCommerce + Dokan with a full Docker Compose infrastructure.
+role: Full-stack lead
+dates: 2024 – present
+tech:
+  - WordPress
+  - WooCommerce
+  - Dokan
+  - PHP
+  - MariaDB
+  - Redis
+  - Docker
+  - GitLab CI
+  - Apache
+  - LiteSpeed
+  - AWS Lambda
+status: live
+---
+
+## Problem
+
+A B2B sourcing platform needed an end-to-end marketplace where verified buyers could solicit bids from verified sellers via reverse auction, transact with built-in KYC and dispute resolution, and accept AI-assisted product listings. The existing off-the-shelf marketplace plugins didn't cover reverse auctions, complex seller verification flows, or AWS-Lambda-backed product enrichment.
+
+## Solution
+
+Built on top of WordPress + WooCommerce + Dokan, extended with **17+ custom plugins** that own the marketplace's distinctive flows: reverse-auction bidding, multi-step seller KYC, AI product creation (an AWS Lambda that takes a few keywords and produces SEO-friendly descriptions), live chat between buyer and seller, and a dispute workflow with admin escalation. Infrastructure runs in Docker Compose with Apache + LiteSpeed in front, MariaDB primary + Redis object cache, and a GitLab CI/CD pipeline that does backup → deploy → rollback automatically on every push to main.
+
+## Architecture
+
+- WordPress as the CMS + auth layer; WooCommerce for catalog/cart/checkout; Dokan for multi-vendor.
+- Custom plugins layered on Dokan's hooks for reverse auctions, KYC stages, dispute states.
+- AWS Lambda function fronted by API Gateway for AI product enrichment (called from the seller-side admin UI).
+- Redis as a session and object cache; MariaDB as primary DB with a nightly logical backup to S3.
+- GitLab CI: lint → build Docker images → push to registry → SSH deploy with health-check rollback.
+
+## Key technical decisions
+
+- **Custom plugins over forks** — kept Dokan's core upgradeable; all bespoke logic lives in side-by-side plugins that hook into Dokan rather than patching it.
+- **Docker Compose over a managed PaaS** — gave full control over LiteSpeed cache config and the WordPress object cache, both of which matter at scale on this stack.
+- **Lambda for AI** — enrichment can be slow and fail; isolating it as a stateless function meant the WordPress request never blocked on it.
+
+## Outcomes
+
+- 17+ custom plugins shipped, fully deployable via CI/CD with automated rollback.
+- AI product creation cut seller listing time noticeably; KYC + dispute flows handled in-house with no third-party SaaS.
+
+## What's next
+
+- Migrate the AI enrichment Lambda from prompt templates to a managed Bedrock workflow.
+- Move primary cache from Redis to a tiered LiteSpeed + Redis combination for content vs object cache separation.

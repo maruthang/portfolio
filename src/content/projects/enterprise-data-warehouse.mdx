@@ -1,0 +1,48 @@
+---
+title: Enterprise Data Warehouse
+slug: enterprise-data-warehouse
+summary: Medallion-architecture data warehouse (Bronze → Silver → Gold) powering executive Power BI dashboards in the insurance domain. SCD Type 1/2, Delta Lake optimizations, and Databricks Asset Bundles for IaC.
+role: Learner / contributor
+dates: 2026 – present
+tech:
+  - Databricks
+  - PySpark
+  - Scala
+  - Delta Lake
+  - dbt
+  - Azure ADLS
+  - Power BI
+  - Dynatrace
+status: learning
+---
+
+## Problem
+
+Executive leadership at an insurance carrier needed unified, reliably-fresh KPIs across policies, claims, and channels. Source data lives in heterogeneous systems with inconsistent schemas, sporadic delivery, and audit requirements that demand traceability from dashboard back to source row.
+
+## Solution
+
+A Databricks Lakehouse organized as Medallion: **Bronze** (raw landing from ADLS), **Silver** (cleaned, conformed, schema-on-read normalized), **Gold** (business-grade marts feeding Power BI). PySpark for Bronze→Silver, dbt + Spark SQL for Silver→Gold business logic. Slowly-changing-dimension Type 1/2 for entity history. Delta Lake `OPTIMIZE` + `VACUUM` + `Z-ORDER` keep query latencies predictable. Databricks Asset Bundles turn the whole pipeline into checked-in IaC. Dynatrace monitors job-level SLAs.
+
+## Architecture
+
+- ADLS Gen2 as the lake storage; Delta tables at every layer.
+- Bronze ingest via Auto Loader for streaming files; batch via Databricks Jobs.
+- Silver transformations in PySpark, idempotent merges keyed on natural keys.
+- Gold via dbt with Spark adapter; tested via dbt's `not_null` / `unique` / freshness assertions.
+- IaC via Asset Bundles deployed from CI.
+
+## Key technical decisions
+
+- **Medallion** — gives a clear contract for who owns what layer.
+- **dbt for Gold** — lets analytics engineers contribute without writing PySpark.
+- **Z-ORDER on Gold tables** by the most-filtered Power BI column — large query speedups for common dashboard slicers.
+
+## Outcomes
+
+- _Currently upskilling on this stack — outcomes will be added as work matures._
+
+## What's next
+
+- Wire SCD Type 2 history into Power BI models for time-travel reporting.
+- Move from manual VACUUM cadence to automated retention policies driven by table tags.
