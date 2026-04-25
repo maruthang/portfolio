@@ -17,9 +17,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <a href="#main-content" className="skip-link">
+          Skip to main content
+        </a>
         <Providers>
           <Header />
-          <main className="mx-auto min-h-[calc(100vh-3.5rem-6rem)] max-w-5xl px-4 py-12">
+          <main
+            id="main-content"
+            className="mx-auto min-h-[calc(100vh-3.5rem-6rem)] max-w-5xl px-4 py-12"
+          >
             {children}
           </main>
           <Footer />
