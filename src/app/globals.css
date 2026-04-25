@@ -136,3 +136,70 @@ textarea:focus-visible {
     animation: none;
   }
 }
+
+/* Custom cursor — only on hover-capable, non-reduced-motion devices */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  body.has-custom-cursor {
+    cursor: none;
+  }
+  body.has-custom-cursor a,
+  body.has-custom-cursor button,
+  body.has-custom-cursor [data-cursor-hover],
+  body.has-custom-cursor input,
+  body.has-custom-cursor textarea,
+  body.has-custom-cursor label {
+    cursor: none;
+  }
+}
+.cc-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 28px;
+  height: 28px;
+  margin-left: -14px;
+  margin-top: -14px;
+  border: 1.5px solid var(--color-brand-500);
+  border-radius: 9999px;
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: difference;
+  transition:
+    width 200ms ease-out,
+    height 200ms ease-out,
+    margin 200ms ease-out,
+    opacity 150ms ease-out;
+  opacity: 0;
+}
+.cc-ring.cc-ring--visible {
+  opacity: 1;
+}
+.cc-ring.cc-ring--hover {
+  width: 64px;
+  height: 64px;
+  margin-left: -32px;
+  margin-top: -32px;
+}
+.cc-ring.cc-ring--click {
+  width: 18px;
+  height: 18px;
+  margin-left: -9px;
+  margin-top: -9px;
+}
+.cc-dot {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 5px;
+  height: 5px;
+  margin-left: -2.5px;
+  margin-top: -2.5px;
+  background: var(--color-brand-500);
+  border-radius: 9999px;
+  pointer-events: none;
+  z-index: 10000;
+  opacity: 0;
+}
+.cc-dot.cc-dot--visible {
+  opacity: 1;
+}
