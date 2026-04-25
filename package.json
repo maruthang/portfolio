@@ -15,7 +15,9 @@
     "test:ui": "vitest --ui",
     "tokens:build": "tsx scripts/generate-tokens-css.ts",
     "prebuild": "npm run tokens:build",
-    "predev": "npm run tokens:build"
+    "predev": "npm run tokens:build",
+    "ladle": "ladle serve",
+    "ladle:build": "ladle build"
   },
   "dependencies": {
     "clsx": "^2.1.1",
@@ -26,6 +28,7 @@
     "tailwind-merge": "^3.5.0"
   },
   "devDependencies": {
+    "@ladle/react": "^5.1.1",
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
