@@ -53,6 +53,15 @@ export function OSSPreview() {
         ))}
       </div>
 
+      <div className="mt-6">
+        <a
+          href="/oss"
+          className="inline-flex items-center gap-1 text-sm text-[var(--color-brand-500)] hover:underline"
+        >
+          View every PR →
+        </a>
+      </div>
+
       <div className="mt-10">
         <h3 className="mb-3 font-mono text-sm tracking-wide text-[var(--muted)] uppercase">
           Currently contributing to
