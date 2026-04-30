@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { ThemeToggle } from '@/design-system/components/ThemeToggle';
-import { ThemePalette } from '@/design-system/components/ThemePalette';
 import { MobileDrawer } from '@/design-system/components/MobileDrawer';
 
 const navLinks = [
@@ -23,7 +22,6 @@ export function Header() {
           ))}
         </nav>
         <div className="flex items-center gap-2">
-          <ThemePalette />
           <ThemeToggle />
           <MobileDrawer links={navLinks} />
         </div>
