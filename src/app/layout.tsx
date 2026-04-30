@@ -1,9 +1,12 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
+import Script from 'next/script';
 import { Providers } from './providers';
 import { Header } from '@/design-system/layout/Header';
 import { Footer } from '@/design-system/layout/Footer';
+import { personSchema } from '@/lib/jsonld';
+import { contact } from '@/content/contact';
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
 const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] });
@@ -37,6 +40,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <Script
+          id="ld-person"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(
+              personSchema({
+                name: 'Maruthan G',
+                url: siteUrl,
+                jobTitle: 'Full-stack developer',
+                sameAs: contact.socials.map((s) => s.href) as string[],
+              }),
+            ),
+          }}
+        />
         <a href="#main-content" className="skip-link">
           Skip to main content
         </a>

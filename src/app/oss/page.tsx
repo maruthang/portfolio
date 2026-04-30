@@ -1,13 +1,17 @@
 import type { Metadata } from 'next';
+import Script from 'next/script';
 import { Section } from '@/design-system/components/Section';
 import { Card } from '@/design-system/components/Card';
 import { OssExplorer } from '@/design-system/components/OssExplorer';
 import { ossStats, ossProjects, ossAllPrs } from '@/content/oss';
+import { breadcrumbListSchema } from '@/lib/jsonld';
 
 export const metadata: Metadata = {
   title: 'Open Source — Maruthan G',
   description: 'Full open-source contribution history across NestJS, VS Code, BullMQ, and more.',
 };
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://portfolio-tawny-two-72.vercel.app';
 
 export default function OssPage() {
   return (
@@ -16,6 +20,18 @@ export default function OssPage() {
       title="Every contribution"
       description="The full searchable list. Click any PR to verify on GitHub."
     >
+      <Script
+        id="ld-bc-oss"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbListSchema([
+              { name: 'Home', url: `${siteUrl}/` },
+              { name: 'Open Source', url: `${siteUrl}/oss` },
+            ]),
+          ),
+        }}
+      />
       <div className="grid gap-6 md:grid-cols-3">
         <Card>
           <p className="font-mono text-4xl font-bold text-[var(--color-brand-500)]">
