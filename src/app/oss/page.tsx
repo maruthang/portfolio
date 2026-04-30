@@ -43,7 +43,7 @@ export default function OssPage() {
               <a
                 href={p.href}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="font-mono text-sm text-[var(--fg)] hover:text-[var(--color-brand-500)]"
               >
                 {p.name}

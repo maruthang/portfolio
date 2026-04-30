@@ -7,6 +7,8 @@ import { Breadcrumbs } from '@/design-system/components/Breadcrumbs';
 import { PrevNextProject } from '@/design-system/components/PrevNextProject';
 import { projects } from '@/content/projects';
 
+export const dynamicParams = false;
+
 export async function generateStaticParams() {
   return getAllProjectSlugs().map((slug) => ({ slug }));
 }

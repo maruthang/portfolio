@@ -18,6 +18,7 @@ jobs:
       # npm install instead of ci: cross-platform dedup differs between Windows dev and Linux CI
       - run: npm install --no-audit --no-fund
       - run: npm run typecheck
+      - run: npm run lint
       - run: npm run format:check
       - run: npm test
       - run: npx playwright install --with-deps chromium

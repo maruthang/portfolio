@@ -27,7 +27,7 @@ const mdxComponents = {
     <a
       className="text-[var(--color-brand-500)] underline-offset-2 hover:underline"
       target={props.href?.startsWith('http') ? '_blank' : undefined}
-      rel={props.href?.startsWith('http') ? 'noreferrer' : undefined}
+      rel={props.href?.startsWith('http') ? 'noopener noreferrer' : undefined}
       {...props}
     />
   ),

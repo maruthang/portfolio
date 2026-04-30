@@ -10,6 +10,7 @@ const schema = z.object({
   name: z.string().min(1, 'Name is required'),
   email: z.string().email('Valid email required'),
   message: z.string().min(10, 'Message must be at least 10 characters'),
+  company: z.string().max(0).optional(),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -17,7 +18,8 @@ type FormValues = z.infer<typeof schema>;
 type ActionResult =
   | { status: 'ok' }
   | { status: 'fallback'; mailtoHref: string }
-  | { status: 'error'; message?: string };
+  | { status: 'error'; message?: string }
+  | { status: 'rate_limited'; message: string };
 
 interface ContactFormProps {
   action: (input: FormValues) => Promise<ActionResult>;
@@ -44,7 +46,11 @@ export function ContactForm({ action }: ContactFormProps) {
 
   if (result?.status === 'ok') {
     return (
-      <p className="rounded-md border border-[var(--color-success)]/30 bg-[var(--color-success)]/10 p-4 text-sm text-[var(--color-success)]">
+      <p
+        role="status"
+        aria-live="polite"
+        className="rounded-md border border-[var(--color-success)]/30 bg-[var(--color-success)]/10 p-4 text-sm text-[var(--color-success)]"
+      >
         Thanks — your message is on its way.
       </p>
     );
@@ -60,10 +66,16 @@ export function ContactForm({ action }: ContactFormProps) {
           id="name"
           type="text"
           autoComplete="name"
+          aria-invalid={!!errors.name}
+          aria-describedby={errors.name ? 'name-error' : undefined}
           className={fieldClass}
           {...register('name')}
         />
-        {errors.name && <p className="text-xs text-[var(--color-error)]">{errors.name.message}</p>}
+        {errors.name && (
+          <p id="name-error" className="text-xs text-[var(--color-error)]">
+            {errors.name.message}
+          </p>
+        )}
       </div>
 
       <div className="space-y-1">
@@ -74,11 +86,15 @@ export function ContactForm({ action }: ContactFormProps) {
           id="email"
           type="email"
           autoComplete="email"
+          aria-invalid={!!errors.email}
+          aria-describedby={errors.email ? 'email-error' : undefined}
           className={fieldClass}
           {...register('email')}
         />
         {errors.email && (
-          <p className="text-xs text-[var(--color-error)]">{errors.email.message}</p>
+          <p id="email-error" className="text-xs text-[var(--color-error)]">
+            {errors.email.message}
+          </p>
         )}
       </div>
 
@@ -89,12 +105,22 @@ export function ContactForm({ action }: ContactFormProps) {
         <textarea
           id="message"
           rows={5}
+          aria-invalid={!!errors.message}
+          aria-describedby={errors.message ? 'message-error' : undefined}
           className={cn(fieldClass, 'resize-y')}
           {...register('message')}
         />
         {errors.message && (
-          <p className="text-xs text-[var(--color-error)]">{errors.message.message}</p>
+          <p id="message-error" className="text-xs text-[var(--color-error)]">
+            {errors.message.message}
+          </p>
         )}
+      </div>
+
+      {/* Honeypot — hidden from users, baited for bots. */}
+      <div aria-hidden="true" className="absolute left-[-10000px] h-0 w-0 overflow-hidden">
+        <label htmlFor="company">Company (leave blank)</label>
+        <input id="company" type="text" tabIndex={-1} autoComplete="off" {...register('company')} />
       </div>
 
       <button
@@ -105,19 +131,25 @@ export function ContactForm({ action }: ContactFormProps) {
         {isSubmitting ? 'Sending…' : 'Send message'}
       </button>
 
-      {result?.status === 'fallback' && (
-        <p className="text-xs text-[var(--muted)]">
-          Email isn&apos;t configured here yet —{' '}
-          <a href={result.mailtoHref} className="text-[var(--color-brand-500)] hover:underline">
-            open email client
-          </a>{' '}
-          to send directly.
-        </p>
-      )}
+      <div role="status" aria-live="polite" className="space-y-1">
+        {result?.status === 'fallback' && (
+          <p className="text-xs text-[var(--muted)]">
+            Email isn&apos;t configured here yet —{' '}
+            <a href={result.mailtoHref} className="text-[var(--color-brand-500)] hover:underline">
+              open email client
+            </a>{' '}
+            to send directly.
+          </p>
+        )}
 
-      {result?.status === 'error' && result.message && (
-        <p className="text-xs text-[var(--color-error)]">{result.message}</p>
-      )}
+        {result?.status === 'rate_limited' && (
+          <p className="text-xs text-[var(--color-error)]">{result.message}</p>
+        )}
+
+        {result?.status === 'error' && result.message && (
+          <p className="text-xs text-[var(--color-error)]">{result.message}</p>
+        )}
+      </div>
     </form>
   );
 }

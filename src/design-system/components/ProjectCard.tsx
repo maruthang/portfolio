@@ -53,7 +53,7 @@ export function ProjectCard({ project }: { project: Project }) {
             <a
               href={project.links.live}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-1 text-[var(--color-brand-500)] hover:underline"
             >
               Live <ArrowUpRight className="h-3.5 w-3.5" />
@@ -63,7 +63,7 @@ export function ProjectCard({ project }: { project: Project }) {
             <a
               href={project.links.repo}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-1 text-[var(--muted)] hover:text-[var(--fg)]"
             >
               GitHub <ArrowUpRight className="h-3.5 w-3.5" />

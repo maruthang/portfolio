@@ -100,6 +100,38 @@ textarea:focus-visible {
   outline-offset: 2px;
 }
 
+/* Hero heading line-by-line reveal — pure CSS so SSR / no-JS users still see text. */
+@keyframes hero-line-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+    clip-path: inset(100% 0 0 0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    clip-path: inset(0 0 0 0);
+  }
+}
+.hero-line {
+  display: block;
+  animation: hero-line-up 0.6s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+.hero-line-1 {
+  animation-delay: 0.1s;
+}
+.hero-line-2 {
+  animation-delay: 0.22s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-line {
+    animation: none;
+    opacity: 1;
+    transform: none;
+    clip-path: none;
+  }
+}
+
 /* Hero star twinkle */
 @keyframes twinkle {
   0%,

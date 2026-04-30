@@ -1,7 +1,7 @@
 'use client';
 
 import { Palette } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { cn } from '@/design-system/utils/cn';
 
 const ACCENTS = [
@@ -18,6 +18,7 @@ const DEFAULT_ACCENT: AccentId = 'blue';
 export function ThemePalette({ className }: { className?: string }) {
   const [open, setOpen] = useState(false);
   const [current, setCurrent] = useState<AccentId>(DEFAULT_ACCENT);
+  const wrapRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const saved =
@@ -27,6 +28,23 @@ export function ThemePalette({ className }: { className?: string }) {
     setCurrent(saved);
     document.documentElement.setAttribute('data-accent', saved);
   }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    const onClick = (e: MouseEvent) => {
+      if (!wrapRef.current) return;
+      if (!wrapRef.current.contains(e.target as Node)) setOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    document.addEventListener('mousedown', onClick);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      document.removeEventListener('mousedown', onClick);
+    };
+  }, [open]);
 
   const choose = (id: AccentId) => {
     setCurrent(id);
@@ -38,7 +56,7 @@ export function ThemePalette({ className }: { className?: string }) {
   const currentHex = ACCENTS.find((a) => a.id === current)?.hex ?? ACCENTS[0]!.hex;
 
   return (
-    <div className={cn('relative', className)}>
+    <div ref={wrapRef} className={cn('relative', className)}>
       <button
         type="button"
         aria-label="Change accent color"
@@ -65,6 +83,7 @@ export function ThemePalette({ className }: { className?: string }) {
               key={a.id}
               type="button"
               aria-label={`Accent: ${a.label}`}
+              aria-pressed={current === a.id}
               onClick={() => choose(a.id)}
               className={cn(
                 'h-7 w-7 rounded-full border transition-transform hover:scale-110',

@@ -22,7 +22,7 @@ export function Footer() {
                 <a
                   href={s.href}
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                   className="hover:text-[var(--fg)]"
                 >
                   {s.label}
@@ -40,7 +40,7 @@ export function Footer() {
                 <a
                   href="https://github.com/maruthang/portfolio"
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                   className="hover:text-[var(--fg)]"
                 >
                   View source

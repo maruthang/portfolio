@@ -10,9 +10,29 @@ import { BootLoader } from '@/design-system/components/BootLoader';
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
 const geistMono = Geist_Mono({ variable: '--font-geist-mono', subsets: ['latin'] });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'https://portfolio-tawny-two-72.vercel.app';
+
 export const metadata: Metadata = {
-  title: 'Maruthan G — Portfolio',
-  description: 'Full-stack developer and OSS contributor',
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: 'Maruthan G — Portfolio',
+    template: '%s · Maruthan G',
+  },
+  description:
+    'Full-stack developer at Finstein. OSS contributor across NestJS, VS Code, BullMQ, Node.js undici.',
+  openGraph: {
+    type: 'website',
+    siteName: 'Maruthan G',
+    url: siteUrl,
+    title: 'Maruthan G — Portfolio',
+    description: 'Full-stack developer and OSS contributor',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Maruthan G — Portfolio',
+    description: 'Full-stack developer and OSS contributor',
+  },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -31,11 +31,15 @@ describe('ContactForm', () => {
     await user.type(screen.getByLabelText(/message/i), 'Hello there, this is plenty long enough.');
     await user.click(screen.getByRole('button', { name: /send message/i }));
     expect(await screen.findByText(/thanks/i)).toBeInTheDocument();
-    expect(action).toHaveBeenCalledWith({
-      name: 'Jane',
-      email: 'jane@example.com',
-      message: 'Hello there, this is plenty long enough.',
-    });
+    expect(action).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'Jane',
+        email: 'jane@example.com',
+        message: 'Hello there, this is plenty long enough.',
+      }),
+    );
+    // Honeypot must remain empty for legitimate submissions.
+    expect(action.mock.calls[0]![0]).toMatchObject({ company: '' });
   });
 
   it('shows mailto fallback link when action returns fallback', async () => {

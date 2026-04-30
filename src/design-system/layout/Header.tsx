@@ -5,7 +5,6 @@ import { MobileDrawer } from '@/design-system/components/MobileDrawer';
 
 const navLinks = [
   { href: '/projects', label: 'Projects' },
-  { href: '/blog', label: 'Blog' },
   { href: '/oss', label: 'OSS' },
 ];
 

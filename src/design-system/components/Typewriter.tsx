@@ -21,6 +21,7 @@ export function Typewriter({
 }: TypewriterProps) {
   const reduced = useReducedMotion();
   const [text, setText] = useState('');
+  const [activeWord, setActiveWord] = useState(words[0] ?? '');
   const stateRef = useRef({ index: 0, text: '', phase: 'typing' as 'typing' | 'deleting' });
 
   useEffect(() => {
@@ -56,6 +57,7 @@ export function Typewriter({
         }
         s.phase = 'typing';
         s.index = (s.index + 1) % words.length;
+        setActiveWord(words[s.index] ?? '');
         timer = setTimeout(tick, typingSpeedMs);
       }
     };
@@ -78,8 +80,11 @@ export function Typewriter({
 
   return (
     <span data-testid="typewriter" aria-live="polite" className={cn('inline-block', className)}>
-      {text}
-      <span className="ml-0.5 inline-block h-[1em] w-[2px] -translate-y-[0.05em] animate-pulse bg-[var(--color-brand-500)] align-middle" />
+      <span aria-hidden="true">
+        {text}
+        <span className="ml-0.5 inline-block h-[1em] w-[2px] -translate-y-[0.05em] animate-pulse bg-[var(--color-brand-500)] align-middle" />
+      </span>
+      <span className="sr-only">{activeWord}</span>
     </span>
   );
 }

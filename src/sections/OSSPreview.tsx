@@ -38,7 +38,7 @@ export function OSSPreview() {
             key={h.href}
             href={h.href}
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             className="flex items-start justify-between gap-4 rounded-md border border-[var(--border)] bg-[var(--surface)] p-4 transition-colors hover:border-[var(--color-brand-500)]/60"
           >
             <div className="space-y-1">
@@ -72,7 +72,7 @@ export function OSSPreview() {
               key={p.name}
               href={p.href}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="rounded-md border border-[var(--border)] px-3 py-1.5 font-mono text-xs text-[var(--fg)] transition-colors hover:border-[var(--color-brand-500)]/60"
               title={p.focus}
             >

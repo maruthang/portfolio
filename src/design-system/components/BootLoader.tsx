@@ -3,16 +3,33 @@
 import { useEffect, useState } from 'react';
 import { useReducedMotion } from '@/design-system/motion/reducedMotion';
 
+const SESSION_KEY = 'portfolio-booted';
+
 export function BootLoader() {
   const reduced = useReducedMotion();
   const [count, setCount] = useState(0);
+  const [shouldRun, setShouldRun] = useState<boolean | null>(null);
   const [gone, setGone] = useState(false);
 
   useEffect(() => {
     if (reduced) {
-      setGone(true);
+      setShouldRun(false);
       return;
     }
+    try {
+      if (sessionStorage.getItem(SESSION_KEY)) {
+        setShouldRun(false);
+        return;
+      }
+      sessionStorage.setItem(SESSION_KEY, '1');
+    } catch {
+      // sessionStorage unavailable — fall through and run boot.
+    }
+    setShouldRun(true);
+  }, [reduced]);
+
+  useEffect(() => {
+    if (!shouldRun) return;
     let active = true;
     const start = performance.now();
     const duration = 800;
@@ -33,14 +50,17 @@ export function BootLoader() {
     return () => {
       active = false;
     };
-  }, [reduced]);
+  }, [shouldRun]);
 
-  if (reduced || gone) return null;
+  if (!shouldRun || gone) return null;
 
   return (
-    <div className="boot-loader" role="status" aria-live="polite" aria-label="Loading portfolio">
-      <div className="boot-counter">{count}</div>
+    <div className="boot-loader" role="status" aria-label="Loading portfolio">
+      <div aria-hidden="true" className="boot-counter">
+        {count}
+      </div>
       <div
+        aria-hidden="true"
         className="boot-bar"
         role="progressbar"
         aria-valuenow={count}
@@ -49,7 +69,9 @@ export function BootLoader() {
       >
         <div className="boot-fill" style={{ width: `${count}%` }} />
       </div>
-      <div className="boot-text">Maruthan G</div>
+      <div aria-hidden="true" className="boot-text">
+        Maruthan G
+      </div>
     </div>
   );
 }

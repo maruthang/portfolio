@@ -27,6 +27,7 @@ export function OssPrTable({ prs }: { prs: OssPr[] }) {
   const filterButton = (label: string, value: StatusFilter) => (
     <button
       type="button"
+      aria-pressed={statusFilter === value}
       onClick={() => setStatusFilter(value)}
       className={cn(
         'rounded-md border px-3 py-1 text-xs font-medium transition-colors',
@@ -49,6 +50,7 @@ export function OssPrTable({ prs }: { prs: OssPr[] }) {
           />
           <input
             type="text"
+            aria-label="Search pull requests"
             placeholder="Search PRs by title, project, or number..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -86,7 +88,7 @@ export function OssPrTable({ prs }: { prs: OssPr[] }) {
                   <a
                     href={pr.href}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     className="inline-flex items-center gap-1 text-[var(--fg)] hover:underline"
                   >
                     #{pr.number} {pr.title}

@@ -32,7 +32,7 @@ export function Contact() {
                   <a
                     href={s.href}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     className="text-[var(--fg)] hover:text-[var(--color-brand-500)]"
                   >
                     {s.label} <span className="text-[var(--muted)]">— {s.handle}</span>

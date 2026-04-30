@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import matter from 'gray-matter';
 
 const PROJECT_DIR = join(process.cwd(), 'src/content/projects');
+const SLUG_PATTERN = /^[a-z0-9][a-z0-9-]*$/;
 
 export interface ProjectFrontmatter {
   title: string;
@@ -29,6 +30,7 @@ export function getAllProjectSlugs(): string[] {
 }
 
 export function getProjectMDX(slug: string): ProjectMDX | null {
+  if (!SLUG_PATTERN.test(slug)) return null;
   const file = join(PROJECT_DIR, `${slug}.mdx`);
   if (!existsSync(file)) return null;
   const raw = readFileSync(file, 'utf8');
