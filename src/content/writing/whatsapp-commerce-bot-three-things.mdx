@@ -1,0 +1,75 @@
+---
+title: 'Shipping a WhatsApp commerce bot: HMAC, idempotency, and conversation state'
+description: 'Three primitives you cannot half-ass when wiring WhatsApp into your e-commerce backend. Pick each one deliberately.'
+date: '2026-03-28'
+slug: 'whatsapp-commerce-bot-three-things'
+tags:
+  - nestjs
+  - webhooks
+  - state-machines
+---
+
+We built a WhatsApp-to-WooCommerce bridge. Customers browse products, manage carts, place orders, and raise disputes — all by sending text messages. The business logic turned out to be the easy part. The hard parts live at the boundaries: who is allowed to talk to your webhook, what happens when the same event arrives twice, and what the customer's "current step" actually means at any given moment. Three things you cannot half-ass.
+
+## 1 — HMAC verification
+
+Meta signs every webhook event it delivers with `X-Hub-Signature-256`, a hex-encoded HMAC-SHA256 digest computed over the raw request body using your app's secret. That signature is the only proof the event came from Meta and not from someone replaying a captured payload or fabricating one from scratch.
+
+The verification is simple, and failing closed is the only correct default:
+
+```ts
+import { createHmac, timingSafeEqual } from 'node:crypto';
+
+export function isValidMetaSignature(
+  rawBody: Buffer,
+  header: string | undefined,
+  appSecret: string,
+): boolean {
+  if (!header?.startsWith('sha256=')) return false;
+  const expected = createHmac('sha256', appSecret).update(rawBody).digest();
+  const provided = Buffer.from(header.slice('sha256='.length), 'hex');
+  if (expected.length !== provided.length) return false;
+  return timingSafeEqual(expected, provided);
+}
+```
+
+The length check before `timingSafeEqual` is necessary because `timingSafeEqual` throws if the two buffers differ in length. The comparison itself must be constant-time: a naive string equality check leaks how many leading bytes matched through timing, which can be used to brute-force the expected value byte by byte.
+
+Mount this as NestJS middleware that runs before any route handler touches the body. Do not parse the body with `express.json()` first — JSON parsing normalises whitespace and key order, which changes the digest. Read the raw bytes, verify, then parse.
+
+## 2 — Idempotency
+
+Meta retries webhook deliveries aggressively. If your server returns anything other than a 200 within a few seconds, the same event comes back. Without deduplication, a single business event — an order placed, a payment confirmed — can trigger N order creations or N payment captures downstream.
+
+The cheapest fix is a table with a unique constraint on the event id:
+
+```sql
+CREATE TABLE processed_events (
+  event_id TEXT PRIMARY KEY,
+  processed_at INTEGER NOT NULL
+);
+```
+
+Wrap the side-effecting handler in a transaction that inserts the row first. The unique constraint makes the second and Nth deliveries throw a constraint violation, which you catch and turn into a 200 response with no side effects. The first delivery commits the row and runs the handler. Subsequent deliveries fail on insert, return 200, and the handler never runs.
+
+Why SQLite rather than Redis or Postgres here: zero operational overhead on a single host, the throughput ceiling comfortably covers B2C WhatsApp message volumes, and one less moving part to reason about during an incident. If you outgrow a single host, migrating to Postgres is a one-line change in the query. Redis is a reasonable alternative but introduces TTL expiry to manage, which reopens the dedup window if you set it too short.
+
+## 3 — Conversation state
+
+WhatsApp conversations have implicit ordering that customers rarely articulate. A customer browsing products, adding to a cart, entering an address, confirming payment, and opening a dispute follows a sequence. By week three of shipping ad-hoc handler branches, you have spaghetti and nothing you can test in isolation.
+
+Pick explicit state names and explicit transitions between them:
+
+```
+BROWSING → CART → CHECKOUT_AWAITING_ADDRESS
+  → CHECKOUT_AWAITING_PAYMENT → ORDER_CONFIRMED
+  → DISPUTE_OPEN
+```
+
+Each incoming message is an event that drives a transition. Each transition is a pure function: current state plus event in, next state plus side effects out. You store the current state in a row keyed by the customer's phone number.
+
+The payoff is replay testing. When a customer reports "the bot said the wrong thing at step three," you take their message log, feed it into the state machine from the initial state, and assert the final state matches what you expected. With ad-hoc branching, there is no clean equivalent because the "state" is scattered across a dozen local variables and early returns. With explicit transitions, a regression test is five lines: initial state, three events, assert final state. When a transition misbehaves in production, the log tells you exactly which one.
+
+## Closing
+
+Three primitives, three deliberate choices. The trust boundary, the dedup boundary, and the state boundary are not the places to be creative. They are the places where you copy the well-known pattern, lock the door, and move on to the problem your bot is actually supposed to solve. The business logic can be clever. The plumbing should be boring.
