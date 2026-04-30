@@ -24,8 +24,8 @@ export function Hero() {
       </h1>
 
       <p className="mt-6 max-w-2xl text-lg text-[var(--fg)]">
-        Full-stack developer building production B2B systems and contributing to the dev tools I
-        use every day.
+        Full-stack developer building production B2B systems and contributing to the dev tools I use
+        every day.
       </p>
 
       <p className="mt-3 max-w-2xl text-base text-[var(--muted)]">

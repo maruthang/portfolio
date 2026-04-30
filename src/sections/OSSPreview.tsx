@@ -32,7 +32,7 @@ export function OSSPreview() {
                 <GitMerge className="h-3 w-3" />
                 {h.mergedOn ?? 'merged'}
               </span>
-              <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+              <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </div>
           </a>
         ))}

@@ -11,11 +11,10 @@ export function About() {
             <span className="font-mono text-sm tracking-wide text-[var(--muted)] uppercase">
               What I ship —
             </span>{' '}
-            production web and mobile apps at{' '}
-            <span className="text-[var(--fg)]">Finstein</span> across NestJS, Next.js, Angular, and
-            React Native (Expo). B2B platforms, analytics dashboards, real-time messaging, payments,
-            mobile apps. Before that I taught programming and robotics as a STEM instructor at LMES
-            Academy.
+            production web and mobile apps at <span className="text-[var(--fg)]">Finstein</span>{' '}
+            across NestJS, Next.js, Angular, and React Native (Expo). B2B platforms, analytics
+            dashboards, real-time messaging, payments, mobile apps. Before that I taught programming
+            and robotics as a STEM instructor at LMES Academy.
           </p>
           <p>
             <span className="font-mono text-sm tracking-wide text-[var(--muted)] uppercase">

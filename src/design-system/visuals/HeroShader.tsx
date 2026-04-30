@@ -10,8 +10,7 @@ function StaticFallback() {
       <div
         className="absolute inset-0 opacity-[0.06]"
         style={{
-          backgroundImage:
-            'radial-gradient(circle, var(--color-brand-500) 1px, transparent 1px)',
+          backgroundImage: 'radial-gradient(circle, var(--color-brand-500) 1px, transparent 1px)',
           backgroundSize: '24px 24px',
           maskImage: 'radial-gradient(ellipse at center, black 30%, transparent 75%)',
           WebkitMaskImage: 'radial-gradient(ellipse at center, black 30%, transparent 75%)',

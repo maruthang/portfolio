@@ -167,8 +167,7 @@ export function OssConstellation({
                     : 'border-[var(--border)] text-[var(--fg)] hover:border-[var(--color-brand-500)]/60',
                 )}
               >
-                {p.name}{' '}
-                <span className="text-[var(--muted)]">({p.merged})</span>
+                {p.name} <span className="text-[var(--muted)]">({p.merged})</span>
               </button>
             </li>
           );
