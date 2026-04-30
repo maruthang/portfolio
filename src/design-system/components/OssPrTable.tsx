@@ -7,7 +7,13 @@ import { cn } from '@/design-system/utils/cn';
 
 type StatusFilter = 'all' | 'merged' | 'open';
 
-export function OssPrTable({ prs }: { prs: OssPr[] }) {
+export function OssPrTable({
+  prs,
+  projectFilter,
+}: {
+  prs: OssPr[];
+  projectFilter?: string | null;
+}) {
   const [query, setQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
 
@@ -15,6 +21,7 @@ export function OssPrTable({ prs }: { prs: OssPr[] }) {
     const q = query.trim().toLowerCase();
     return prs.filter((pr) => {
       if (statusFilter !== 'all' && pr.status !== statusFilter) return false;
+      if (projectFilter && pr.project !== projectFilter) return false;
       if (!q) return true;
       return (
         pr.title.toLowerCase().includes(q) ||
@@ -22,7 +29,7 @@ export function OssPrTable({ prs }: { prs: OssPr[] }) {
         String(pr.number).includes(q)
       );
     });
-  }, [prs, query, statusFilter]);
+  }, [prs, query, statusFilter, projectFilter]);
 
   const filterButton = (label: string, value: StatusFilter) => (
     <button

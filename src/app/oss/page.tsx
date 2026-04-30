@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Section } from '@/design-system/components/Section';
 import { Card } from '@/design-system/components/Card';
-import { OssPrTable } from '@/design-system/components/OssPrTable';
+import { OssExplorer } from '@/design-system/components/OssExplorer';
 import { ossStats, ossProjects, ossAllPrs } from '@/content/oss';
 
 export const metadata: Metadata = {
@@ -58,9 +58,9 @@ export default function OssPage() {
 
       <div className="mt-12">
         <h3 className="mb-4 font-mono text-sm tracking-wide text-[var(--muted)] uppercase">
-          All pull requests
+          Constellation + all pull requests
         </h3>
-        <OssPrTable prs={ossAllPrs} />
+        <OssExplorer prs={ossAllPrs} projects={ossProjects} />
       </div>
     </Section>
   );
