@@ -1,6 +1,14 @@
-import { describe, it, expect } from 'vitest';
+import React from 'react';
+import { describe, it, expect, vi } from 'vitest';
 import { render } from '@testing-library/react';
 import { HeroShader } from '@/design-system/visuals/HeroShader';
+
+vi.mock('@react-three/fiber', () => ({
+  Canvas: ({ children }: { children: React.ReactNode }) => (
+    <canvas data-testid="hero-shader-canvas">{children}</canvas>
+  ),
+  useFrame: () => {},
+}));
 
 describe('HeroShader', () => {
   it('renders a static fallback (no canvas) under prefers-reduced-motion', () => {
@@ -28,5 +36,24 @@ describe('HeroShader', () => {
     expect(root).not.toBeNull();
     expect(root!.getAttribute('aria-hidden')).toBe('true');
     expect(root!.className).toContain('pointer-events-none');
+  });
+
+  it('mounts a canvas when prefers-reduced-motion is not set', async () => {
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: () => ({
+        matches: false,
+        media: '(prefers-reduced-motion: reduce)',
+        onchange: null,
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        addListener: () => {},
+        removeListener: () => {},
+        dispatchEvent: () => false,
+      }),
+    });
+    const { container, findByTestId } = render(<HeroShader />);
+    expect(await findByTestId('hero-shader-canvas')).toBeInTheDocument();
+    expect(container.querySelector('[data-testid="hero-shader-fallback"]')).not.toBeNull();
   });
 });
