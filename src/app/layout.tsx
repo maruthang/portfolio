@@ -4,7 +4,6 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import { Providers } from './providers';
 import { Header } from '@/design-system/layout/Header';
 import { Footer } from '@/design-system/layout/Footer';
-import { CustomCursor } from '@/design-system/components/CustomCursor';
 import { BootLoader } from '@/design-system/components/BootLoader';
 
 const geistSans = Geist({ variable: '--font-geist-sans', subsets: ['latin'] });
@@ -44,7 +43,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           Skip to main content
         </a>
         <Providers>
-          <CustomCursor />
           <Header />
           <main
             id="main-content"
