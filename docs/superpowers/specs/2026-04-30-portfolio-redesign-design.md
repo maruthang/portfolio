@@ -34,35 +34,36 @@ Anti-pattern: "designer cosplay" portfolios where five micro-interactions compet
 
 ### 4.1 Cuts (remove or radically scale back)
 
-| Cut | Why |
-|---|---|
-| `CustomCursor` component | Accessibility hazard, breaks expected pointer affordances, reads as designer-cosplay to senior engineers |
-| `BootLoader` component | Even sessionStorage-gated, adds perceived load on first paint and reads gimmicky on a CV-tier site |
+| Cut                                | Why                                                                                                                                     |
+| ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `CustomCursor` component           | Accessibility hazard, breaks expected pointer affordances, reads as designer-cosplay to senior engineers                                |
+| `BootLoader` component             | Even sessionStorage-gated, adds perceived load on first paint and reads gimmicky on a CV-tier site                                      |
 | `Typewriter` cycling roles in Hero | Overused trope. Cycling "Full Stack Developer / OSS Contributor / Bug Hunter / Tooling Builder" dilutes positioning — pick one identity |
-| Multi-palette `ThemePalette` | Keep light/dark toggle only. Multiple palettes signal "I made this for me," not for the visitor |
-| "2+ Years professional" stat | Subtracts credibility for senior audiences. Drop |
-| Existing `HeroBackground` | Replace with the signature WebGL moment (§5.1) |
+| Multi-palette `ThemePalette`       | Keep light/dark toggle only. Multiple palettes signal "I made this for me," not for the visitor                                         |
+| "2+ Years professional" stat       | Subtracts credibility for senior audiences. Drop                                                                                        |
+| Existing `HeroBackground`          | Replace with the signature WebGL moment (§5.1)                                                                                          |
 
 **Files affected:**
+
 - Delete: `src/design-system/components/CustomCursor.tsx`, `BootLoader.tsx`, `Typewriter.tsx`
 - Reduce: `src/design-system/components/ThemePalette.tsx` → keep only the light/dark toggle, remove palette switcher UI
 - Update: `src/content/stats.ts` (drop years stat), `src/sections/Hero.tsx` (drop typewriter, drop ROLES array), `src/app/layout.tsx` (drop CustomCursor + BootLoader imports/mounts)
 
 ### 4.2 Adds
 
-| Add | Why |
-|---|---|
-| Hero shader background (signature moment 1) | Earns the "ships UI as well as backend" claim with one polished piece |
-| OSS contribution constellation on `/oss` (signature moment 2) | The portfolio's most-shared screenshot. 9 repo nodes, 57 PRs orbiting, click-to-filter |
-| Scroll-driven case study reveals (signature moment 3) | Sticky title + parallax tech chips + syntax-highlighted code reveals on intersection |
-| `/writing` route + 3 initial posts | Long-tail SEO + signals communication skill to all four audiences |
-| `/public/resume.pdf` linked from About + Footer | Recruiters need a download path |
-| Per-route OG images via `next/og` | Better link-share previews for case studies and writing posts |
-| JSON-LD structured data (`Person`, `BreadcrumbList`, `BlogPosting`) | SEO + LLM discovery |
-| Single condensed Hero value prop | 5-second test pass |
-| Reframed Tech Stack: grouped by purpose | Reads as senior, not bootcamp checklist |
-| Trimmed Featured Projects on home: 3–4, not 6 | Forces selection signal; full list lives on `/projects` |
-| Optional Cal.com scheduling link in Contact | Lower-friction CTA for freelance clients |
+| Add                                                                 | Why                                                                                    |
+| ------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| Hero shader background (signature moment 1)                         | Earns the "ships UI as well as backend" claim with one polished piece                  |
+| OSS contribution constellation on `/oss` (signature moment 2)       | The portfolio's most-shared screenshot. 9 repo nodes, 57 PRs orbiting, click-to-filter |
+| Scroll-driven case study reveals (signature moment 3)               | Sticky title + parallax tech chips + syntax-highlighted code reveals on intersection   |
+| `/writing` route + 3 initial posts                                  | Long-tail SEO + signals communication skill to all four audiences                      |
+| `/public/resume.pdf` linked from About + Footer                     | Recruiters need a download path                                                        |
+| Per-route OG images via `next/og`                                   | Better link-share previews for case studies and writing posts                          |
+| JSON-LD structured data (`Person`, `BreadcrumbList`, `BlogPosting`) | SEO + LLM discovery                                                                    |
+| Single condensed Hero value prop                                    | 5-second test pass                                                                     |
+| Reframed Tech Stack: grouped by purpose                             | Reads as senior, not bootcamp checklist                                                |
+| Trimmed Featured Projects on home: 3–4, not 6                       | Forces selection signal; full list lives on `/projects`                                |
+| Optional Cal.com scheduling link in Contact                         | Lower-friction CTA for freelance clients                                               |
 
 ## 5. The three signature moments
 
@@ -120,16 +121,17 @@ This frame is what FAANG/Stripe-tier engineers actually read. It substitutes "en
 
 ## 7. Content rewrites
 
-| Section | Change |
-|---|---|
-| **Hero** | One identity sentence, no cycling. Sharper sub-line. CTA stack: View work / Get in touch / Email |
-| **About** | "What I ship" + "What I make better" two-paragraph structure. Drop "Years professional" stat. Add explicit **"Available for: open to full-time roles and contract work"** line |
-| **TechStack** | Group by purpose: **Backend**, **Frontend**, **Mobile**, **Data & Infra** |
-| **FeaturedProjects (home)** | 3–4 only: B2B Marketplace, Sales Analytics, Conversational Commerce Bot, Fitness Ecosystem. Full 6 stay on `/projects` |
-| **OSSPreview (home)** | Drop preview-table (competes with `/oss`). Replace with 3 hero PRs as quote cards (one VS Code, one NestJS, one undici/BullMQ) + "View all 57 →" CTA to `/oss` |
-| **Contact** | Keep form (already hardened). Add Cal.com placeholder link. URL filled at launch |
+| Section                     | Change                                                                                                                                                                         |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Hero**                    | One identity sentence, no cycling. Sharper sub-line. CTA stack: View work / Get in touch / Email                                                                               |
+| **About**                   | "What I ship" + "What I make better" two-paragraph structure. Drop "Years professional" stat. Add explicit **"Available for: open to full-time roles and contract work"** line |
+| **TechStack**               | Group by purpose: **Backend**, **Frontend**, **Mobile**, **Data & Infra**                                                                                                      |
+| **FeaturedProjects (home)** | 3–4 only: B2B Marketplace, Sales Analytics, Conversational Commerce Bot, Fitness Ecosystem. Full 6 stay on `/projects`                                                         |
+| **OSSPreview (home)**       | Drop preview-table (competes with `/oss`). Replace with 3 hero PRs as quote cards (one VS Code, one NestJS, one undici/BullMQ) + "View all 57 →" CTA to `/oss`                 |
+| **Contact**                 | Keep form (already hardened). Add Cal.com placeholder link. URL filled at launch                                                                                               |
 
 **Hero copy draft:**
+
 > Full-stack developer building production B2B systems and contributing to the dev tools I use every day.
 >
 > Currently at Finstein, shipping NestJS + Next.js + React Native. Off-hours, 57 merged PRs across VS Code, NestJS, Node.js undici, BullMQ.
@@ -224,7 +226,7 @@ If scope tightens, Phase 2 ships separately without blocking Phase 1.
 
 ## 13. Open items (defaults set; override at launch)
 
-- **"Available for" line** → defaulted to: *"open to full-time roles and contract work"*. Override if positioning changes.
+- **"Available for" line** → defaulted to: _"open to full-time roles and contract work"_. Override if positioning changes.
 - **Cal.com URL** → placeholder; Maruthan supplies before launch.
 - **Resume PDF** → Maruthan supplies the binary; spec wires up the link.
 - **Writing post titles** → drafts above are starting points; final titles set during Phase 2.

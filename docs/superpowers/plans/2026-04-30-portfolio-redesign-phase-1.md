@@ -7,6 +7,7 @@
 **Architecture:** Surgical polish on the existing Next.js 15 + React 19 app. Add `react-three-fiber` for two visuals, preserve all existing routing and infra, lift one piece of `/oss` state into a new `OssExplorer` wrapper to let the constellation drive the PR table filter. No service or schema changes. Per the design spec (`docs/superpowers/specs/2026-04-30-portfolio-redesign-design.md`), Phase 2 (`/writing` route, scroll reveals on case studies) gets its own plan after Phase 1 ships.
 
 **Tech Stack:**
+
 - Existing: Next.js 15.5.15, React 19.2.4, TypeScript, Tailwind v4, Framer Motion 12, MDX (`next-mdx-remote`), `rehype-pretty-code`, Vitest 4, Playwright 1.59
 - New deps: `@react-three/fiber@^9`, `three@^0.176`, `@types/three`
 
@@ -15,6 +16,7 @@
 ## File Structure
 
 ### Created
+
 - `src/design-system/visuals/HeroShader.tsx` — r3f shader plane that replaces `HeroBackground.tsx`. Owns reduced-motion fallback and IntersectionObserver pause.
 - `src/design-system/visuals/OssConstellation.tsx` — r3f canvas: 9 repo nodes on a fixed ring, PRs orbiting on ellipses. Accepts `prs`, `selectedProject`, `onSelectProject` props.
 - `src/design-system/components/OssExplorer.tsx` — `'use client'` wrapper that owns `projectFilter` state and composes `OssConstellation` + `OssPrTable`.
@@ -28,6 +30,7 @@
 - `src/lib/oss-positioning.ts` + `tests/oss-positioning.test.ts` — pure ring-position utility for repo nodes (TDD-friendly).
 
 ### Modified
+
 - `src/app/layout.tsx` — drop `BootLoader` and `CustomCursor` mounts; add `Person` JSON-LD block.
 - `src/app/oss/page.tsx` — replace direct `OssPrTable` with `OssExplorer`; add `BreadcrumbList` JSON-LD.
 - `src/app/projects/[slug]/page.tsx` — add `BreadcrumbList` JSON-LD.
@@ -49,6 +52,7 @@
 - `tests/e2e/projects.spec.ts` — update assertions from "problem"/"solution" to "context"/"my role".
 
 ### Deleted
+
 - `src/design-system/components/CustomCursor.tsx`
 - `src/design-system/components/BootLoader.tsx`
 - `src/design-system/components/Typewriter.tsx`
@@ -64,6 +68,7 @@
 ### Task 1: Install r3f + three dependencies
 
 **Files:**
+
 - Modify: `package.json` (deps + devDeps)
 - Modify: `package-lock.json` (auto-updated by npm)
 
@@ -109,6 +114,7 @@ git commit -m "chore(deps): add react-three-fiber + three for hero shader and os
 ### Task 2: Remove `CustomCursor`
 
 **Files:**
+
 - Delete: `src/design-system/components/CustomCursor.tsx`
 - Modify: `src/app/layout.tsx` (remove import + mount)
 
@@ -158,6 +164,7 @@ git commit -m "refactor: remove CustomCursor — accessibility hazard, not earni
 ### Task 3: Remove `BootLoader`
 
 **Files:**
+
 - Delete: `src/design-system/components/BootLoader.tsx`
 - Modify: `src/app/layout.tsx` (remove import + mount)
 
@@ -209,6 +216,7 @@ git commit -m "refactor: remove BootLoader — adds load on first paint, reads g
 `ThemeToggle` (light/dark) stays; only the accent-color picker goes.
 
 **Files:**
+
 - Delete: `src/design-system/components/ThemePalette.tsx`
 - Delete: `tests/ThemePalette.test.tsx`
 - Modify: `src/design-system/layout/Header.tsx` (drop import + render)
@@ -250,6 +258,7 @@ git commit -m "refactor: remove multi-palette ThemePalette — keep dark/light t
 ### Task 5: Drop "Years professional" stat
 
 **Files:**
+
 - Modify: `src/content/stats.ts`
 
 `About.tsx` already maps over `stats`, so removing one entry is enough.
@@ -286,6 +295,7 @@ git commit -m "refactor(content): drop 'years professional' stat; align project 
 ### Task 6: Rewrite Hero copy and remove `Typewriter`
 
 **Files:**
+
 - Modify: `src/sections/Hero.tsx`
 - Delete: `src/design-system/components/Typewriter.tsx`
 - Delete: `tests/Typewriter.test.tsx`
@@ -321,8 +331,8 @@ export function Hero() {
       </h1>
 
       <p className="mt-6 max-w-2xl text-lg text-[var(--fg)]">
-        Full-stack developer building production B2B systems and contributing to the dev tools I
-        use every day.
+        Full-stack developer building production B2B systems and contributing to the dev tools I use
+        every day.
       </p>
 
       <p className="mt-3 max-w-2xl text-base text-[var(--muted)]">
@@ -375,6 +385,7 @@ Do NOT commit yet. Hero.tsx now imports `HeroShader` which doesn't exist; commit
 ### Task 7: Create `HeroShader` (static fallback first)
 
 **Files:**
+
 - Create: `src/design-system/visuals/HeroShader.tsx`
 - Create: `tests/HeroShader.test.tsx`
 - Delete: `src/design-system/visuals/HeroBackground.tsx`
@@ -441,8 +452,7 @@ function StaticFallback() {
       <div
         className="absolute inset-0 opacity-[0.06]"
         style={{
-          backgroundImage:
-            'radial-gradient(circle, var(--color-brand-500) 1px, transparent 1px)',
+          backgroundImage: 'radial-gradient(circle, var(--color-brand-500) 1px, transparent 1px)',
           backgroundSize: '24px 24px',
           maskImage: 'radial-gradient(ellipse at center, black 30%, transparent 75%)',
           WebkitMaskImage: 'radial-gradient(ellipse at center, black 30%, transparent 75%)',
@@ -517,6 +527,7 @@ git commit -m "feat(hero): rewrite copy, drop Typewriter, replace HeroBackground
 ### Task 8: Add r3f shader animation to `HeroShader`
 
 **Files:**
+
 - Modify: `src/design-system/visuals/HeroShader.tsx`
 - Modify: `tests/HeroShader.test.tsx` (add a new test for the canvas being mounted when motion is allowed)
 
@@ -581,8 +592,7 @@ function StaticFallback() {
       <div
         className="absolute inset-0 opacity-[0.06]"
         style={{
-          backgroundImage:
-            'radial-gradient(circle, var(--color-brand-500) 1px, transparent 1px)',
+          backgroundImage: 'radial-gradient(circle, var(--color-brand-500) 1px, transparent 1px)',
           backgroundSize: '24px 24px',
           maskImage: 'radial-gradient(ellipse at center, black 30%, transparent 75%)',
           WebkitMaskImage: 'radial-gradient(ellipse at center, black 30%, transparent 75%)',
@@ -759,6 +769,7 @@ git commit -m "feat(hero): add r3f shader background with reduced-motion + Inter
 ### Task 9: Rewrite `About` — "Available for" line + resume PDF link
 
 **Files:**
+
 - Modify: `src/sections/About.tsx`
 
 (Resume PDF placeholder file is added in Task 19; this task only wires the link.)
@@ -779,11 +790,10 @@ export function About() {
             <span className="font-mono text-sm tracking-wide text-[var(--muted)] uppercase">
               What I ship —
             </span>{' '}
-            production web and mobile apps at{' '}
-            <span className="text-[var(--fg)]">Finstein</span> across NestJS, Next.js, Angular, and
-            React Native (Expo). B2B platforms, analytics dashboards, real-time messaging, payments,
-            mobile apps. Before that I taught programming and robotics as a STEM instructor at LMES
-            Academy.
+            production web and mobile apps at <span className="text-[var(--fg)]">Finstein</span>{' '}
+            across NestJS, Next.js, Angular, and React Native (Expo). B2B platforms, analytics
+            dashboards, real-time messaging, payments, mobile apps. Before that I taught programming
+            and robotics as a STEM instructor at LMES Academy.
           </p>
           <p>
             <span className="font-mono text-sm tracking-wide text-[var(--muted)] uppercase">
@@ -844,6 +854,7 @@ git commit -m "refactor(about): What I ship / What I make better structure + Ava
 ### Task 10: Regroup `TechStack` to 4 categories
 
 **Files:**
+
 - Modify: `src/content/techStack.ts`
 
 `TechStack.tsx` already iterates `techCategoriesInOrder` and filters by category — no component change needed.
@@ -936,11 +947,13 @@ git commit -m "refactor(content): regroup tech stack into 4 purposeful categorie
 ### Task 11: Trim Featured Projects to 4
 
 **Files:**
+
 - Modify: `src/content/projects.ts`
 
 - [ ] **Step 1: Edit `src/content/projects.ts`**
 
 Set `featured: true` on exactly these 4 (and `featured: false` on the other 2):
+
 - `b2b-marketplace` → true
 - `conversational-commerce-bot` → true
 - `sales-analytics-platform` → true
@@ -976,6 +989,7 @@ git commit -m "refactor(content): trim featured projects on home from 6 to 4"
 ### Task 12: Rewrite `OSSPreview` to 3-quote-card layout
 
 **Files:**
+
 - Modify: `src/sections/OSSPreview.tsx`
 
 Drop the stat cards (they live on `/oss`), drop the "Currently contributing to" project list (also on `/oss`). Replace the highlights list with 3 hand-picked PR quote cards.
@@ -1019,7 +1033,7 @@ export function OSSPreview() {
                 <GitMerge className="h-3 w-3" />
                 {h.mergedOn ?? 'merged'}
               </span>
-              <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+              <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
             </div>
           </a>
         ))}
@@ -1058,6 +1072,7 @@ git commit -m "refactor(oss-preview): replace stat panel + highlight list with 3
 ### Task 13: Add Cal.com placeholder to Contact
 
 **Files:**
+
 - Modify: `src/content/contact.ts`
 - Modify: `src/sections/Contact.tsx`
 
@@ -1089,20 +1104,22 @@ export type Social = (typeof contact.socials)[number];
 Below the email line and above "Find me elsewhere", insert:
 
 ```tsx
-{contact.scheduleHref && (
-  <p className="text-[var(--muted)]">
-    Or{' '}
-    <a
-      href={contact.scheduleHref}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="text-[var(--color-brand-500)] hover:underline"
-    >
-      book a call
-    </a>
-    .
-  </p>
-)}
+{
+  contact.scheduleHref && (
+    <p className="text-[var(--muted)]">
+      Or{' '}
+      <a
+        href={contact.scheduleHref}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-[var(--color-brand-500)] hover:underline"
+      >
+        book a call
+      </a>
+      .
+    </p>
+  );
+}
 ```
 
 - [ ] **Step 3: Verify**
@@ -1123,6 +1140,7 @@ git commit -m "feat(contact): add optional scheduleHref (Cal.com) link"
 ### Task 14: Pure positioning utility for OSS constellation (TDD)
 
 **Files:**
+
 - Create: `src/lib/oss-positioning.ts`
 - Create: `tests/oss-positioning.test.ts`
 
@@ -1233,6 +1251,7 @@ git commit -m "feat(oss-constellation): add pure positioning utilities (ring + e
 ### Task 15: `OssConstellation` r3f component
 
 **Files:**
+
 - Create: `src/design-system/visuals/OssConstellation.tsx`
 - Create: `tests/OssConstellation.test.tsx`
 
@@ -1469,8 +1488,7 @@ export function OssConstellation({
                     : 'border-[var(--border)] text-[var(--fg)] hover:border-[var(--color-brand-500)]/60',
                 )}
               >
-                {p.name}{' '}
-                <span className="text-[var(--muted)]">({p.merged})</span>
+                {p.name} <span className="text-[var(--muted)]">({p.merged})</span>
               </button>
             </li>
           );
@@ -1518,6 +1536,7 @@ git commit -m "feat(oss): add OssConstellation r3f visual with accessible fallba
 ### Task 16: Wire `OssConstellation` into `/oss` via `OssExplorer`
 
 **Files:**
+
 - Create: `src/design-system/components/OssExplorer.tsx`
 - Modify: `src/design-system/components/OssPrTable.tsx` (add optional `projectFilter` prop)
 - Modify: `src/app/oss/page.tsx` (replace direct table with `OssExplorer`)
@@ -1637,6 +1656,7 @@ npm run dev
 ```
 
 Open http://localhost:3000/oss. Confirm:
+
 - Constellation renders above the fallback list.
 - Clicking a repo node (or fallback button) filters the table.
 - Clicking again unselects.
@@ -1657,6 +1677,7 @@ git commit -m "feat(oss): wire OssConstellation into /oss via OssExplorer; add p
 ### Task 17: Reformat 6 case studies to the new 7-section skeleton
 
 **Files:**
+
 - Modify: `src/content/projects/b2b-marketplace.mdx`
 - Modify: `src/content/projects/conversational-commerce-bot.mdx`
 - Modify: `src/content/projects/sales-analytics-platform.mdx`
@@ -1701,13 +1722,14 @@ The 7 sections (use these exact h2 strings — Task 18 updates e2e to match):
 - [ ] **Step 1: Reformat `b2b-marketplace.mdx`**
 
 Replace the body (everything below the `---` frontmatter close) with the 7 sections, reusing existing content:
+
 - "Context" gets the current "Problem" paragraph.
 - "My role" — write a new sentence based on `role: Full-stack lead` from frontmatter: "Full-stack lead. Owned the WordPress + Dokan extensions, the AWS Lambda product-creation pipeline, the Docker Compose infra, and the GitLab CI/CD pipeline."
 - "Architecture" gets the current "Solution" + "Architecture" paragraphs.
 - "Key technical decisions" — write 3 trade-offs grounded in the existing tech stack, e.g.:
-  1. *Why WordPress + Dokan, not a custom Node app* — leveraged Dokan's vendor model + WooCommerce payments instead of rebuilding.
-  2. *Why GitLab CI for backup → deploy → rollback* — the marketplace ran on a single VPS; a deploy that breaks customer orders is unrecoverable, so every deploy snapshots MariaDB + WP uploads first.
-  3. *Why AWS Lambda for AI product creation* — burstable workload, no need for a long-running service, integrates with WP via webhooks.
+  1. _Why WordPress + Dokan, not a custom Node app_ — leveraged Dokan's vendor model + WooCommerce payments instead of rebuilding.
+  2. _Why GitLab CI for backup → deploy → rollback_ — the marketplace ran on a single VPS; a deploy that breaks customer orders is unrecoverable, so every deploy snapshots MariaDB + WP uploads first.
+  3. _Why AWS Lambda for AI product creation_ — burstable workload, no need for a long-running service, integrates with WP via webhooks.
 - "Constraints" — single-VPS infra, small team, hard launch deadline.
 - "What I'd do differently" — extract the AI Lambda + reverse auction into proper microservices behind an API gateway; split the WP monolith.
 - "Tech stack" — bullet list copy-pasted from frontmatter.
@@ -1752,6 +1774,7 @@ git commit -m "refactor(case-studies): reformat all 6 MDX projects to 7-section 
 ### Task 18: Update e2e tests for new headings
 
 **Files:**
+
 - Modify: `tests/e2e/projects.spec.ts`
 
 The home spec already only checks for "Maruthan" in h1 and section heading text that we preserved. The projects spec checks for "Problem" / "Solution" headings — those no longer exist.
@@ -1794,6 +1817,7 @@ git commit -m "test(e2e): update /projects/[slug] heading assertions for new cas
 ### Task 19: Resume PDF placeholder + Footer link
 
 **Files:**
+
 - Create: `public/resume.pdf` (placeholder binary)
 - Modify: `src/design-system/layout/Footer.tsx`
 
@@ -1829,11 +1853,7 @@ In the "Connect" column, append a list item:
 
 ```tsx
 <li>
-  <a
-    href="/resume.pdf"
-    download
-    className="hover:text-[var(--fg)]"
-  >
+  <a href="/resume.pdf" download className="hover:text-[var(--fg)]">
     Resume (PDF)
   </a>
 </li>
@@ -1859,6 +1879,7 @@ git commit -m "feat: add resume PDF placeholder and Footer link"
 ### Task 20: Per-route OG images (next/og)
 
 **Files:**
+
 - Create: `src/app/opengraph-image.tsx` (root)
 - Create: `src/app/projects/[slug]/opengraph-image.tsx`
 
@@ -1878,37 +1899,31 @@ export const contentType = 'image/png';
 
 export default function OgImage() {
   return new ImageResponse(
-    (
-      <div
-        style={{
-          width: '100%',
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          padding: 80,
-          background: 'linear-gradient(135deg, #0d1117 0%, #161b22 100%)',
-          color: '#e6edf3',
-          fontFamily: 'sans-serif',
-        }}
-      >
-        <div style={{ fontSize: 36, fontFamily: 'monospace', color: '#58a6ff' }}>
-          maruthan.dev
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-          <div style={{ fontSize: 72, fontWeight: 700, lineHeight: 1.1 }}>
-            Maruthan G
-          </div>
-          <div style={{ fontSize: 32, color: '#7d8590', maxWidth: 900 }}>
-            Full-stack developer building production B2B systems and contributing to the dev tools
-            I use every day.
-          </div>
-        </div>
-        <div style={{ fontSize: 24, color: '#7d8590' }}>
-          57 merged PRs · NestJS · VS Code · undici · BullMQ
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        padding: 80,
+        background: 'linear-gradient(135deg, #0d1117 0%, #161b22 100%)',
+        color: '#e6edf3',
+        fontFamily: 'sans-serif',
+      }}
+    >
+      <div style={{ fontSize: 36, fontFamily: 'monospace', color: '#58a6ff' }}>maruthan.dev</div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+        <div style={{ fontSize: 72, fontWeight: 700, lineHeight: 1.1 }}>Maruthan G</div>
+        <div style={{ fontSize: 32, color: '#7d8590', maxWidth: 900 }}>
+          Full-stack developer building production B2B systems and contributing to the dev tools I
+          use every day.
         </div>
       </div>
-    ),
+      <div style={{ fontSize: 24, color: '#7d8590' }}>
+        57 merged PRs · NestJS · VS Code · undici · BullMQ
+      </div>
+    </div>,
     size,
   );
 }
@@ -1934,30 +1949,28 @@ export default async function OgImage({ params }: { params: Promise<{ slug: stri
   const tech = project?.tech.slice(0, 6).join(' · ') ?? '';
 
   return new ImageResponse(
-    (
-      <div
-        style={{
-          width: '100%',
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          padding: 80,
-          background: 'linear-gradient(135deg, #0d1117 0%, #161b22 100%)',
-          color: '#e6edf3',
-          fontFamily: 'sans-serif',
-        }}
-      >
-        <div style={{ fontSize: 28, fontFamily: 'monospace', color: '#58a6ff' }}>
-          maruthan.dev / case study
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-          <div style={{ fontSize: 60, fontWeight: 700, lineHeight: 1.1 }}>{title}</div>
-          <div style={{ fontSize: 28, color: '#7d8590', fontFamily: 'monospace' }}>{tech}</div>
-        </div>
-        <div style={{ fontSize: 22, color: '#7d8590' }}>Maruthan G — Full-stack developer</div>
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        padding: 80,
+        background: 'linear-gradient(135deg, #0d1117 0%, #161b22 100%)',
+        color: '#e6edf3',
+        fontFamily: 'sans-serif',
+      }}
+    >
+      <div style={{ fontSize: 28, fontFamily: 'monospace', color: '#58a6ff' }}>
+        maruthan.dev / case study
       </div>
-    ),
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+        <div style={{ fontSize: 60, fontWeight: 700, lineHeight: 1.1 }}>{title}</div>
+        <div style={{ fontSize: 28, color: '#7d8590', fontFamily: 'monospace' }}>{tech}</div>
+      </div>
+      <div style={{ fontSize: 22, color: '#7d8590' }}>Maruthan G — Full-stack developer</div>
+    </div>,
     size,
   );
 }
@@ -1991,6 +2004,7 @@ git commit -m "feat(seo): per-route OG images via next/og for / and /projects/[s
 ### Task 21: JSON-LD — `Person` (root) + `BreadcrumbList` (case studies + /oss)
 
 **Files:**
+
 - Create: `src/lib/jsonld.ts`
 - Create: `tests/jsonld.test.ts`
 - Modify: `src/app/layout.tsx` (Person)
@@ -2117,7 +2131,7 @@ import { contact } from '@/content/contact';
       }),
     ),
   }}
-/>
+/>;
 ```
 
 (Add the imports at the top of `layout.tsx`.)
@@ -2144,7 +2158,7 @@ const crumbs = [
   type="application/ld+json"
   // eslint-disable-next-line react/no-danger
   dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbListSchema(crumbs)) }}
-/>
+/>;
 ```
 
 - [ ] **Step 7: Mount `BreadcrumbList` on `/oss`**
@@ -2245,6 +2259,7 @@ npm run dev
 Targets: performance ≥90, accessibility 100, best-practices 100, SEO 100.
 
 If any score misses: investigate before declaring Phase 1 done. Common causes:
+
 - Performance < 90: r3f bundle size — verify `dynamic()` import or `Suspense` is doing its job; check Network tab for unexpected payloads.
 - A11y < 100: a missing `alt`, contrast issue, or missing label — DevTools Accessibility tree shows the offender.
 
@@ -2265,24 +2280,24 @@ Phase 2 (writing route, scroll reveals, Cal.com URL when supplied, real resume P
 
 **Spec coverage check:**
 
-| Spec § | Where in plan |
-|---|---|
-| §4.1 Cuts | Tasks 2, 3, 4, 5, 6 (Typewriter), 7 (HeroBackground) |
-| §4.2 Adds | Tasks 7+8 (Hero shader), 14+15+16 (constellation), 19 (resume), 20 (OG), 21 (JSON-LD), 9 (Available for), 10 (TechStack), 11 (Featured trim), 12 (OSS quote cards), 13 (Cal.com), 6 (Hero copy) |
-| §5.1 Hero shader | Tasks 7, 8 |
-| §5.2 OSS constellation | Tasks 14, 15, 16 |
-| §5.3 Scroll reveals | Phase 2 — not in this plan (per spec §11) |
-| §6 Case study format | Task 17 |
-| §7 Content rewrites | Tasks 6, 9, 10, 11, 12, 13 |
-| §8 IA | Unchanged in Phase 1 (no new routes) |
-| §9 Tech additions: `/writing` | Phase 2 |
-| §9 Resume PDF | Task 19 |
-| §9 Per-route OG | Task 20 |
-| §9 JSON-LD Person + Breadcrumb | Task 21; BlogPosting → Phase 2 |
-| §9 Cal.com placeholder | Task 13 |
-| §9 reduced-motion audit | Tasks 8, 15 |
-| §11 Phasing | Followed: Phase 1 in this plan, Phase 2 deferred |
-| §12 Success criteria | Task 22 |
+| Spec §                         | Where in plan                                                                                                                                                                                   |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| §4.1 Cuts                      | Tasks 2, 3, 4, 5, 6 (Typewriter), 7 (HeroBackground)                                                                                                                                            |
+| §4.2 Adds                      | Tasks 7+8 (Hero shader), 14+15+16 (constellation), 19 (resume), 20 (OG), 21 (JSON-LD), 9 (Available for), 10 (TechStack), 11 (Featured trim), 12 (OSS quote cards), 13 (Cal.com), 6 (Hero copy) |
+| §5.1 Hero shader               | Tasks 7, 8                                                                                                                                                                                      |
+| §5.2 OSS constellation         | Tasks 14, 15, 16                                                                                                                                                                                |
+| §5.3 Scroll reveals            | Phase 2 — not in this plan (per spec §11)                                                                                                                                                       |
+| §6 Case study format           | Task 17                                                                                                                                                                                         |
+| §7 Content rewrites            | Tasks 6, 9, 10, 11, 12, 13                                                                                                                                                                      |
+| §8 IA                          | Unchanged in Phase 1 (no new routes)                                                                                                                                                            |
+| §9 Tech additions: `/writing`  | Phase 2                                                                                                                                                                                         |
+| §9 Resume PDF                  | Task 19                                                                                                                                                                                         |
+| §9 Per-route OG                | Task 20                                                                                                                                                                                         |
+| §9 JSON-LD Person + Breadcrumb | Task 21; BlogPosting → Phase 2                                                                                                                                                                  |
+| §9 Cal.com placeholder         | Task 13                                                                                                                                                                                         |
+| §9 reduced-motion audit        | Tasks 8, 15                                                                                                                                                                                     |
+| §11 Phasing                    | Followed: Phase 1 in this plan, Phase 2 deferred                                                                                                                                                |
+| §12 Success criteria           | Task 22                                                                                                                                                                                         |
 
 **Placeholder scan:** None. The Cal.com URL and the resume PDF binary are explicitly called out as user-supplied artifacts in §13 of the spec; the plan installs a placeholder PDF and an undefined `scheduleHref` so the code paths exist.
 
