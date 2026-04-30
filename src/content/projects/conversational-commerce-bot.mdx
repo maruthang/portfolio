@@ -13,32 +13,39 @@ tech:
 status: live
 ---
 
-## Problem
+## Context
 
 The B2B marketplace needed a low-friction channel for buyers in regions where browser usage is secondary to messaging. The bot had to support real-money transactions, idempotent message handling under retries, and multi-step conversation state without losing context across hours-long buyer sessions.
 
-## Solution
+## My role
 
-A NestJS 11 service that consumes Meta's WhatsApp Cloud API webhooks. Verifies signatures via HMAC-SHA256 on every event, stores message IDs in SQLite for idempotency, and uses a state-machine pattern to track each customer's current step (browsing → cart → quote-request → checkout → dispute). All actions write back to WooCommerce via REST APIs, so the WhatsApp flow and the web flow share the same orders, carts, and inventory.
+I owned the project end-to-end: the NestJS 11 service, Meta WhatsApp Cloud API integration, conversation state machine design, SQLite persistence layer, and infrastructure. All actions write back to WooCommerce via REST APIs, so the WhatsApp flow and the web flow share the same orders, carts, and inventory.
 
 ## Architecture
 
-- NestJS modules for `webhooks`, `conversation`, `commerce`, `disputes`, `notifications`.
+- NestJS modules for `webhooks`, `conversation`, `commerce`, `disputes`, and `notifications`.
 - SQLite for the bot's own state (idempotency keys, conversation steps); WooCommerce remains the source of truth for orders.
-- HMAC-SHA256 signature verification on every inbound webhook.
-- State machine implemented as a `ConversationService` keyed on customer phone number.
+- HMAC-SHA256 signature verification on every inbound webhook event.
+- State machine implemented as a `ConversationService` keyed on customer phone number, tracking steps from browsing through checkout to dispute.
 
 ## Key technical decisions
 
-- **SQLite** instead of Postgres — the state is small, ephemeral, and node-local; SQLite + a single Docker volume removed an entire deployment dependency.
-- **Idempotency keys** per Meta message ID — Meta retries delivery; without dedupe we'd double-charge or duplicate orders.
-- **WhatsApp as a thin client** — all business logic lives in WooCommerce; the bot translates intents.
+- **Why HMAC-SHA256 webhook verification on every event** — Meta's signed-payload contract means any unsigned event is either hostile or replayed; failing closed is the only safe default when real orders are at stake.
+- **Why SQLite for idempotency, not Redis** — the state is small, ephemeral, and node-local; SQLite plus a single Docker volume removes an entire deployment dependency without hitting any throughput ceiling for B2C WhatsApp traffic.
+- **Why a multi-step state machine over ad-hoc branching** — WhatsApp conversations have implicit ordering (browse → cart → checkout → dispute) that ad-hoc handlers turn into spaghetti; explicit state names and transitions make replay testing tractable.
 
-## Outcomes
+## Constraints
 
-- Buyers can complete the full purchase flow via WhatsApp, including reverse-auction bid submissions and dispute escalations.
-- Webhook handler verified to be idempotent under Meta's documented retry envelope.
+Meta WhatsApp Cloud API quotas cap burst throughput, and users expect sub-second perceived latency. The HTTP webhook model means I can't hold long-lived connections — every interaction is a stateless inbound event that must resolve and respond quickly.
 
-## What's next
+## What I'd do differently
 
-- Add an internal admin web UI for monitoring active conversations and replaying stuck flows.
+I'd move idempotency storage to Postgres with a proper unique constraint on message IDs once volume crosses single-host comfort, and add a per-user rate limit at the webhook edge to guard against burst abuse before events reach the state machine.
+
+## Tech stack
+
+- NestJS 11
+- TypeScript
+- SQLite
+- Express 5
+- Meta WhatsApp Cloud API

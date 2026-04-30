@@ -2,6 +2,8 @@ export const contact = {
   email: 'maruthangt@gmail.com',
   location: 'Chennai, India',
   availability: 'Open to opportunities',
+  // Set to a Cal.com (or similar) URL when ready. Leave undefined to hide the link.
+  scheduleHref: undefined as string | undefined,
   socials: [
     { label: 'GitHub', href: 'https://github.com/maruthang', handle: '@maruthang' },
     {

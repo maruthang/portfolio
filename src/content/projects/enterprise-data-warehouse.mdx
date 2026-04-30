@@ -16,33 +16,43 @@ tech:
 status: learning
 ---
 
-## Problem
+## Context
 
 Executive leadership at an insurance carrier needed unified, reliably-fresh KPIs across policies, claims, and channels. Source data lives in heterogeneous systems with inconsistent schemas, sporadic delivery, and audit requirements that demand traceability from dashboard back to source row.
 
-## Solution
+## My role
 
-A Databricks Lakehouse organized as Medallion: **Bronze** (raw landing from ADLS), **Silver** (cleaned, conformed, schema-on-read normalized), **Gold** (business-grade marts feeding Power BI). PySpark for Bronze→Silver, dbt + Spark SQL for Silver→Gold business logic. Slowly-changing-dimension Type 1/2 for entity history. Delta Lake `OPTIMIZE` + `VACUUM` + `Z-ORDER` keep query latencies predictable. Databricks Asset Bundles turn the whole pipeline into checked-in IaC. Dynatrace monitors job-level SLAs.
+I'm a data engineering contributor, building the Silver and Gold layer transforms and the dbt-style modelling that feeds Power BI. That includes writing idempotent PySpark merges for Silver, dbt models and data-quality assertions for Gold, and wiring Databricks Asset Bundles so every job and schedule is checked-in code.
 
 ## Architecture
 
-- ADLS Gen2 as the lake storage; Delta tables at every layer.
-- Bronze ingest via Auto Loader for streaming files; batch via Databricks Jobs.
-- Silver transformations in PySpark, idempotent merges keyed on natural keys.
-- Gold via dbt with Spark adapter; tested via dbt's `not_null` / `unique` / freshness assertions.
-- IaC via Asset Bundles deployed from CI.
+- ADLS Gen2 as lake storage; Delta tables at every layer (Bronze, Silver, Gold).
+- Bronze ingested via Auto Loader for streaming files and Databricks Jobs for batch; raw data lands untransformed.
+- Silver transformations in PySpark, with idempotent merges keyed on natural keys and SCD Type 1/2 patterns for slowly-changing dimensions.
+- Gold layer via dbt with the Spark adapter; tested with `not_null`, `unique`, and freshness assertions.
+- Databricks Asset Bundles for IaC; Dynatrace monitors job-level SLAs; Delta `OPTIMIZE` + `VACUUM` + `Z-ORDER` keep query latencies predictable.
 
 ## Key technical decisions
 
-- **Medallion** — gives a clear contract for who owns what layer.
-- **dbt for Gold** — lets analytics engineers contribute without writing PySpark.
-- **Z-ORDER on Gold tables** by the most-filtered Power BI column — large query speedups for common dashboard slicers.
+- **Why Medallion (Bronze / Silver / Gold) over flat staging** — explicit layer contracts make data-quality regressions diagnosable; when a dashboard metric drifts, I can rerun a single layer rather than triggering a full re-ingest from source.
+- **Why SCD Type 2 over Type 1 for slowly changing dimensions** — insurance reporting needs historical truth (a policy's prior premium, prior coverage); Type 2 preserves the timeline for dashboard slicers, whereas Type 1 would silently erase it.
+- **Why Databricks Asset Bundles for IaC over notebook-mode** — every job, schedule, and cluster definition becomes reviewable code; it replicates a workspace cleanly into staging without click-through, and CI can validate bundle syntax before promotion.
 
-## Outcomes
+## Constraints
 
-- _Currently upskilling on this stack — outcomes will be added as work matures._
+This is a learning project, so some design decisions are exploratory rather than driven by production SLAs. Insurance-domain compliance shapes data retention rules and access controls. Power BI consumers expect specific table shapes in Gold, which constrains how freely the dbt models can be refactored.
 
-## What's next
+## What I'd do differently
 
-- Wire SCD Type 2 history into Power BI models for time-travel reporting.
-- Move from manual VACUUM cadence to automated retention policies driven by table tags.
+I'd wire Delta's change-data-feed into downstream Silver transforms so re-runs only touch changed partitions instead of full-table merges. That would cut both compute cost and the re-run blast radius when an upstream schema changes.
+
+## Tech stack
+
+- Databricks
+- PySpark
+- Scala
+- Delta Lake
+- dbt
+- Azure ADLS
+- Power BI
+- Dynatrace

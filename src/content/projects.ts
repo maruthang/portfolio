@@ -83,7 +83,7 @@ export const projects: Project[] = [
       'Hybrid mobile app for hydration tracking, step counting, and health goal management with Keycloak-based SSO and Firebase push notifications.',
     status: 'live',
     tech: ['NestJS 10', 'Angular 18', 'Ionic 8', 'Capacitor 6', 'MySQL', 'Keycloak', 'Firebase'],
-    featured: true,
+    featured: false,
   },
   {
     slug: 'enterprise-data-warehouse',
@@ -92,7 +92,7 @@ export const projects: Project[] = [
       'Medallion architecture (Bronze → Silver → Gold) powering executive Power BI dashboards in the insurance domain. SCD Type 1/2, Delta Lake optimizations, and Databricks Asset Bundles for IaC.',
     status: 'learning',
     tech: ['Databricks', 'PySpark', 'Scala', 'Delta Lake', 'dbt', 'Azure ADLS', 'Power BI'],
-    featured: true,
+    featured: false,
   },
 ];
 

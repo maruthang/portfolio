@@ -1,8 +1,7 @@
-import { ArrowUpRight } from 'lucide-react';
+import Link from 'next/link';
+import { ArrowUpRight, GitMerge } from 'lucide-react';
 import { Section } from '@/design-system/components/Section';
-import { Card } from '@/design-system/components/Card';
-import { Badge } from '@/design-system/components/Badge';
-import { ossStats, ossProjects, ossHighlights } from '@/content/oss';
+import { ossHighlights, ossStats } from '@/content/oss';
 
 export function OSSPreview() {
   return (
@@ -10,79 +9,42 @@ export function OSSPreview() {
       id="oss"
       eyebrow="04 / Open Source"
       title="Open source contributions"
-      description="The work I'm proudest of. Full table with every PR will live at /oss."
+      description={`${ossStats.totalMerged} merged PRs across ${ossStats.projectCount} projects. A few I'm proudest of:`}
     >
-      <div className="grid gap-6 md:grid-cols-3">
-        <Card>
-          <p className="font-mono text-4xl font-bold text-[var(--color-brand-500)]">
-            {ossStats.totalMerged}
-          </p>
-          <p className="text-sm text-[var(--muted)]">Merged PRs</p>
-        </Card>
-        <Card>
-          <p className="font-mono text-4xl font-bold text-[var(--fg)]">{ossStats.totalOpen}</p>
-          <p className="text-sm text-[var(--muted)]">Open PRs in flight</p>
-        </Card>
-        <Card>
-          <p className="font-mono text-4xl font-bold text-[var(--fg)]">{ossStats.projectCount}</p>
-          <p className="text-sm text-[var(--muted)]">OSS projects</p>
-        </Card>
-      </div>
-
-      <div className="mt-10 grid gap-3">
-        <h3 className="font-mono text-sm tracking-wide text-[var(--muted)] uppercase">
-          Recent merged highlights
-        </h3>
-        {ossHighlights.map((h) => (
+      <div className="grid gap-4 md:grid-cols-3">
+        {ossHighlights.slice(0, 3).map((h) => (
           <a
             key={h.href}
             href={h.href}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-start justify-between gap-4 rounded-md border border-[var(--border)] bg-[var(--surface)] p-4 transition-colors hover:border-[var(--color-brand-500)]/60"
+            className="group flex h-full flex-col justify-between gap-4 rounded-md border border-[var(--border)] bg-[var(--surface)] p-5 transition-colors hover:border-[var(--color-brand-500)]/60"
           >
-            <div className="space-y-1">
+            <div className="space-y-2">
               <div className="flex items-center gap-2 text-xs">
                 <span className="font-mono text-[var(--color-brand-500)]">{h.project}</span>
-                <Badge>{h.pr}</Badge>
+                <span className="font-mono text-[var(--muted)]">{h.pr}</span>
               </div>
-              <p className="text-sm text-[var(--fg)]">{h.title}</p>
+              <p className="text-sm leading-relaxed text-[var(--fg)]">{h.title}</p>
             </div>
-            <ArrowUpRight className="mt-1 h-4 w-4 shrink-0 text-[var(--muted)]" />
+            <div className="flex items-center justify-between text-xs text-[var(--muted)]">
+              <span className="inline-flex items-center gap-1">
+                <GitMerge className="h-3 w-3" />
+                {h.mergedOn ?? 'merged'}
+              </span>
+              <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+            </div>
           </a>
         ))}
       </div>
 
-      <div className="mt-6">
-        <a
+      <div className="mt-8">
+        <Link
           href="/oss"
           className="inline-flex items-center gap-1 text-sm text-[var(--color-brand-500)] hover:underline"
         >
-          View every PR →
-        </a>
-      </div>
-
-      <div className="mt-10">
-        <h3 className="mb-3 font-mono text-sm tracking-wide text-[var(--muted)] uppercase">
-          Currently contributing to
-        </h3>
-        <div className="flex flex-wrap gap-2">
-          {ossProjects.map((p) => (
-            <a
-              key={p.name}
-              href={p.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-md border border-[var(--border)] px-3 py-1.5 font-mono text-xs text-[var(--fg)] transition-colors hover:border-[var(--color-brand-500)]/60"
-              title={p.focus}
-            >
-              {p.name}{' '}
-              <span className="text-[var(--muted)]">
-                ({p.merged} merged · {p.open} open)
-              </span>
-            </a>
-          ))}
-        </div>
+          View all {ossStats.totalMerged} merged PRs →
+        </Link>
       </div>
     </Section>
   );

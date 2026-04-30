@@ -29,6 +29,15 @@ export function Footer() {
                 </a>
               </li>
             ))}
+            <li>
+              <a
+                href="/resume.pdf"
+                download
+                className="hover:text-[var(--fg)]"
+              >
+                Resume (PDF)
+              </a>
+            </li>
           </ul>
         </div>
         <div>

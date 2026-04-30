@@ -17,35 +17,44 @@ tech:
 status: live
 ---
 
-## Problem
+## Context
 
 A consumer-brand operations team needed a single pane of glass across Amazon, Flipkart, Blinkit, Zepto, and several other marketplaces — each with its own credentials, schema, refresh cadence, and product taxonomy. The team also needed a self-serve report builder so analysts could compose new metrics without engineering involvement.
 
-## Solution
+## My role
 
-NestJS backend with **192+ REST endpoints** powering a Next.js 15 + React 18 dashboard. Long-running channel sync jobs run on BullMQ workers. Real-time dashboard updates push via Socket.io. A dynamic report builder renders D3.js-driven cohort analyses and Chart.js summaries. Auth uses TOTP-based 2FA/MFA and CASL for fine-grained RBAC. IMAP-based email polling handles platform-verification emails (some marketplaces still send OTPs to email instead of API).
+I led the analytics ingestion and report-builder modules and contributed across the broader platform. That covered the BullMQ worker design, the CASL RBAC layer, the D3.js report-builder surface, and the 192+ NestJS REST endpoints powering the dashboard.
 
 ## Architecture
 
-- NestJS monolith with feature modules per channel + a shared analytics module.
+- NestJS monolith with feature modules per channel plus a shared analytics module.
 - BullMQ + Redis for async sync jobs (one queue per channel, separate concurrency knobs).
-- PostgreSQL as primary store; per-channel staging tables → consolidated analytics tables.
-- Next.js dashboard with React Server Components for the static shell + client components for the interactive D3/Chart.js widgets.
-- Socket.io for real-time refresh of "currently syncing" widgets.
-- CASL for permission checks; TOTP via the `otplib` ecosystem.
+- PostgreSQL as primary store; per-channel staging tables flow into consolidated analytics tables.
+- Next.js 15 dashboard with React Server Components for the static shell and client components for the interactive D3/Chart.js widgets.
+- Socket.io for real-time refresh of "currently syncing" widgets; CASL for permission checks; TOTP via `otplib` for 2FA.
 
 ## Key technical decisions
 
-- **NestJS over a microservices mesh** — sync jobs are heavy but the analytics module benefits from in-process JOINs across channel data; a monolith with BullMQ for parallelism was the simpler win.
-- **CASL over a custom RBAC** — declarative ability definitions made the 192+ endpoints' authz manageable.
-- **IMAP polling for OTP emails** — not pretty, but Amazon Seller Central's verification flow forces it.
+- **Why BullMQ for ingestion queues** — durable, Redis-backed, with first-class delayed/retry/repeat semantics; it aligns with the Node ecosystem we already operate and avoids the operational overhead of a separate message broker.
+- **Why CASL for RBAC over a roles table** — analytics access decisions are condition-rich (a user can read reports they authored or reports their team owns); CASL's ability-based model expresses this cleanly while a flat roles table would hard-code one permission shape.
+- **Why D3 for the report builder, not a chart library** — the report builder requires user-defined dimensions, measures, and interactions that Chart.js or Recharts don't support without fighting their abstractions; D3 takes longer per chart but doesn't cap the design.
 
-## Outcomes
+## Constraints
 
-- 192+ documented API endpoints; >95% covered by integration tests.
-- Real-time dashboards refresh under 2s on the channel-sync hot path.
+With 192+ endpoints the ingestion contract is the slow-changing part of the system, which makes backward compatibility on queue message shapes critical. Aggressive Redis caching accelerates dashboards but can silently serve stale cohort slices if cache invalidation is imprecise.
 
-## What's next
+## What I'd do differently
 
-- Move long-running sync workers to a dedicated worker pool isolated from the API process.
-- Migrate dashboards to streaming server components for instant first paint of large tables.
+I'd materialize cohort-rollup tables on a schedule rather than recomputing per request, and introduce read replicas before vertically scaling the primary — the analytics query patterns are read-heavy and well suited to horizontal read scaling.
+
+## Tech stack
+
+- NestJS 10
+- Next.js 15
+- React 18
+- PostgreSQL
+- Redis
+- Bull/BullMQ
+- Socket.io
+- D3.js
+- Chart.js

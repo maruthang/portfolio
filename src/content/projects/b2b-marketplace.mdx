@@ -19,34 +19,46 @@ tech:
 status: live
 ---
 
-## Problem
+## Context
 
 A B2B sourcing platform needed an end-to-end marketplace where verified buyers could solicit bids from verified sellers via reverse auction, transact with built-in KYC and dispute resolution, and accept AI-assisted product listings. The existing off-the-shelf marketplace plugins didn't cover reverse auctions, complex seller verification flows, or AWS-Lambda-backed product enrichment.
 
-## Solution
+## My role
 
-Built on top of WordPress + WooCommerce + Dokan, extended with **17+ custom plugins** that own the marketplace's distinctive flows: reverse-auction bidding, multi-step seller KYC, AI product creation (an AWS Lambda that takes a few keywords and produces SEO-friendly descriptions), live chat between buyer and seller, and a dispute workflow with admin escalation. Infrastructure runs in Docker Compose with Apache + LiteSpeed in front, MariaDB primary + Redis object cache, and a GitLab CI/CD pipeline that does backup → deploy → rollback automatically on every push to main.
+I was the full-stack lead, owning the WordPress + Dokan extension layer (17+ custom plugins), the AWS Lambda AI product-creation pipeline, Docker Compose infrastructure, and the GitLab CI/CD pipeline that orchestrates backup → deploy → rollback on every push to main.
 
 ## Architecture
 
 - WordPress as the CMS + auth layer; WooCommerce for catalog/cart/checkout; Dokan for multi-vendor.
-- Custom plugins layered on Dokan's hooks for reverse auctions, KYC stages, dispute states.
-- AWS Lambda function fronted by API Gateway for AI product enrichment (called from the seller-side admin UI).
+- Custom plugins layered on Dokan's hooks for reverse auctions, KYC stages, and dispute states.
+- AWS Lambda function fronted by API Gateway for AI product enrichment, called from the seller-side admin UI.
 - Redis as a session and object cache; MariaDB as primary DB with a nightly logical backup to S3.
 - GitLab CI: lint → build Docker images → push to registry → SSH deploy with health-check rollback.
 
 ## Key technical decisions
 
-- **Custom plugins over forks** — kept Dokan's core upgradeable; all bespoke logic lives in side-by-side plugins that hook into Dokan rather than patching it.
-- **Docker Compose over a managed PaaS** — gave full control over LiteSpeed cache config and the WordPress object cache, both of which matter at scale on this stack.
-- **Lambda for AI** — enrichment can be slow and fail; isolating it as a stateless function meant the WordPress request never blocked on it.
+- **Why WordPress + Dokan, not a custom Node app** — Dokan's vendor model and WooCommerce payments gave us marketplace primitives (multi-vendor wallets, payout splits, storefront pages) for free; rebuilding those from scratch would have consumed the entire runway.
+- **Why GitLab CI orchestrates backup → deploy → rollback** — on a single-VPS setup, a failed deploy with no prior snapshot can permanently lose customer orders; snapshotting MariaDB and WP uploads before every deploy makes rollback a one-command operation.
+- **Why AWS Lambda for AI product creation** — enrichment is a bursty, infrequent workload that can be slow or fail; isolating it as a stateless Lambda means the WordPress request never blocks on it, and we only pay when it runs.
 
-## Outcomes
+## Constraints
 
-- 17+ custom plugins shipped, fully deployable via CI/CD with automated rollback.
-- AI product creation cut seller listing time noticeably; KYC + dispute flows handled in-house with no third-party SaaS.
+The platform ran on a single VPS with a small team and a hard launch deadline. The off-the-shelf Dokan/WooCommerce plugin ecosystem was designed for standard storefronts, so reverse-auction bidding and multi-step KYC required significant custom plugin work rather than configuration.
 
-## What's next
+## What I'd do differently
 
-- Migrate the AI enrichment Lambda from prompt templates to a managed Bedrock workflow.
-- Move primary cache from Redis to a tiered LiteSpeed + Redis combination for content vs object cache separation.
+I'd extract the AI enrichment Lambda and the reverse-auction logic into proper microservices behind an API gateway from day one. The WordPress monolith couples release cycles I'd rather keep independent — deploying a change to the auction engine today means a full WP deploy with its rollback risk.
+
+## Tech stack
+
+- WordPress
+- WooCommerce
+- Dokan
+- PHP
+- MariaDB
+- Redis
+- Docker
+- GitLab CI
+- Apache
+- LiteSpeed
+- AWS Lambda
