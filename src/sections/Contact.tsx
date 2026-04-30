@@ -22,6 +22,20 @@ export function Contact() {
               {contact.email}
             </a>
           </p>
+          {contact.scheduleHref && (
+            <p className="text-[var(--muted)]">
+              Or{' '}
+              <a
+                href={contact.scheduleHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[var(--color-brand-500)] hover:underline"
+              >
+                book a call
+              </a>
+              .
+            </p>
+          )}
           <div className="space-y-2">
             <h3 className="font-mono text-sm tracking-wide text-[var(--muted)] uppercase">
               Find me elsewhere
