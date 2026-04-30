@@ -15,33 +15,42 @@ tech:
 status: live
 ---
 
-## Problem
+## Context
 
-A fitness startup needed a three-surface product (mobile app for end users, admin dashboard for trainers/ops, marketing site for acquisition) that all share a backend, a single auth model, and consistent state across surfaces.
+A fitness startup needed a three-surface product — a mobile app for end users, an admin dashboard for trainers and ops, and a marketing site for acquisition — all sharing a single backend, a unified auth model, and consistent state across surfaces. Features span trainer bookings, workout planning, AI coaching, a buddy system, real-time messaging, payments, and push notifications.
 
-## Solution
+## My role
 
-A NestJS 10 backend behind a single PostgreSQL primary, exposing REST + Socket.io. The mobile app is React Native + Expo 51; the admin dashboard and marketing site are Next.js 15. AI coaching uses OpenAI GPT-4o through a small `coach` module that templates the user's workout history into prompts. Buddy system, real-time messaging, and trainer bookings all share the same realtime layer.
+I was the full-stack lead across the mobile and dashboard surfaces. That meant the NestJS 10 backend, the React Native + Expo 51 mobile app, the Next.js 15 admin dashboard, the Socket.io real-time layer, and the OpenAI GPT-4o coaching module that templates workout history into prompts.
 
 ## Architecture
 
-- One NestJS backend serving three frontends.
-- Expo for mobile (iOS + Android) — push notifications via Expo's push service.
-- Next.js 15 for both web surfaces; admin uses RSC heavily, marketing is mostly static.
-- Socket.io rooms per conversation (trainer↔client) and per buddy-group.
-- Stripe for payments.
+- One NestJS 10 backend serving three frontends behind a single PostgreSQL primary.
+- React Native + Expo 51 for iOS and Android; push notifications via Expo's push service.
+- Next.js 15 for both web surfaces — admin uses RSC heavily; marketing is mostly static.
+- Socket.io rooms per conversation (trainer ↔ client) and per buddy group for real-time messaging.
+- Stripe for payments; a `coach` NestJS module wraps GPT-4o completions with workout-history context.
 
 ## Key technical decisions
 
-- **Expo over bare React Native** — OTA updates and the Expo push pipeline saved weeks vs hand-rolling APN/FCM.
-- **GPT-4o over fine-tuned models** — at this stage of the product, prompt templating + retrieval beats the cost of training; revisit when traffic justifies.
-- **Single backend** — no microservices for v1; the surface area is wide but the load is narrow.
+- **Why Expo over bare React Native** — OTA updates, the EAS build pipeline, and the Expo SDK cover push notifications, file system access, and payments without ejection; that saved weeks of native maintenance compared to a bare workflow.
+- **Why Socket.io for real-time messaging, not a third-party service** — message ownership stays in our own database, pricing scales with our infrastructure rather than per-MAU, and we already operate Redis for other purposes.
+- **Why GPT-4o for coaching prompts, not a fine-tuned model** — workout coaching has long-tail variability; the cost of fine-tuning and hosting a model never pays back at this stage; prompt-engineered chat completions with user context are the right tradeoff.
 
-## Outcomes
+## Constraints
 
-- Three surfaces shipped from a shared API; consistent auth + state.
+The project had a mobile-first deadline with a single developer owning the mobile track for stretches. iOS App Store review cadence added unpredictable lead time to every native release, which reinforced the value of Expo's OTA update path for non-native changes.
 
-## What's next
+## What I'd do differently
 
-- Move heavy AI workloads off the request path to a queue.
-- Add a trainer-side analytics dashboard.
+I'd move messaging to a dedicated service the moment trainer-to-athlete group sizes exceed around 50, to avoid the NestJS monolith becoming a bottleneck for a high-frequency realtime path. I'd also centralize prompt templates so coaching tone and persona can A/B without requiring redeploys.
+
+## Tech stack
+
+- NestJS 10
+- React Native
+- Expo 51
+- Next.js 15
+- PostgreSQL
+- Socket.io
+- OpenAI GPT-4o
