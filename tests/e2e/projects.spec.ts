@@ -13,8 +13,9 @@ test('/projects/[slug] renders case study with breadcrumbs and prev/next', async
   await expect(page.getByRole('heading', { level: 1 })).toContainText(
     'B2B Multi-Vendor Marketplace',
   );
-  await expect(page.getByRole('heading', { name: /problem/i })).toBeVisible();
-  await expect(page.getByRole('heading', { name: /solution/i })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /^context$/i })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /^my role$/i })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /^architecture$/i })).toBeVisible();
   await expect(page.getByRole('navigation', { name: /breadcrumb/i })).toBeVisible();
   await expect(page.getByRole('navigation', { name: /project navigation/i })).toBeVisible();
 });
