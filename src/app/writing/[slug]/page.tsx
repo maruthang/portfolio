@@ -72,7 +72,9 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
           ),
         }}
       />
-      <Breadcrumbs items={[{ label: 'Writing', href: '/writing' }, { label: data.frontmatter.title }]} />
+      <Breadcrumbs
+        items={[{ label: 'Writing', href: '/writing' }, { label: data.frontmatter.title }]}
+      />
       <header className="space-y-4">
         <p className="font-mono text-xs text-[var(--muted)]">
           {formatDate(data.frontmatter.date)} · {minutes} min read

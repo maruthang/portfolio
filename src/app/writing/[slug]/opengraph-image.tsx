@@ -21,32 +21,30 @@ export default async function OgImage({ params }: { params: Promise<{ slug: stri
   const date = post ? formatDate(post.date) : '';
 
   return new ImageResponse(
-    (
-      <div
-        style={{
-          width: '100%',
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          padding: 80,
-          background: 'linear-gradient(135deg, #0d1117 0%, #161b22 100%)',
-          color: '#e6edf3',
-          fontFamily: 'sans-serif',
-        }}
-      >
-        <div style={{ fontSize: 28, fontFamily: 'monospace', color: '#58a6ff' }}>
-          maruthan.dev / writing
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-          <div style={{ fontSize: 56, fontWeight: 700, lineHeight: 1.15 }}>{title}</div>
-          {date && (
-            <div style={{ fontSize: 28, color: '#7d8590', fontFamily: 'monospace' }}>{date}</div>
-          )}
-        </div>
-        <div style={{ fontSize: 22, color: '#7d8590' }}>Maruthan G — Full-stack developer</div>
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        padding: 80,
+        background: 'linear-gradient(135deg, #0d1117 0%, #161b22 100%)',
+        color: '#e6edf3',
+        fontFamily: 'sans-serif',
+      }}
+    >
+      <div style={{ fontSize: 28, fontFamily: 'monospace', color: '#58a6ff' }}>
+        maruthan.dev / writing
       </div>
-    ),
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+        <div style={{ fontSize: 56, fontWeight: 700, lineHeight: 1.15 }}>{title}</div>
+        {date && (
+          <div style={{ fontSize: 28, color: '#7d8590', fontFamily: 'monospace' }}>{date}</div>
+        )}
+      </div>
+      <div style={{ fontSize: 22, color: '#7d8590' }}>Maruthan G — Full-stack developer</div>
+    </div>,
     size,
   );
 }
