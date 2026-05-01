@@ -1,0 +1,35 @@
+---
+title: "What 57 OSS PRs taught me about reading other people's code"
+description: 'Five lessons that did not exist for me on PR #1. Distilled from contributions to VS Code, NestJS, undici, BullMQ, and the Angular CLI.'
+date: '2026-03-10'
+slug: '57-oss-prs-reading-other-peoples-code'
+tags:
+  - oss
+  - engineering-craft
+---
+
+I have shipped pull requests to VS Code, the NestJS ecosystem, Node.js undici, BullMQ, and the Angular CLI. Across nine projects and 57 merged PRs, reading other people's code has become the actual skill — not typing, not debugging, not even designing. After enough reps, pattern recognition kicks in. You stop reading code line by line and start scanning for shape. Five lessons that did not exist for me on PR #1, distilled from those 57 merges.
+
+## 1 — Read tests first
+
+Tests are the cleanest spec of intended behavior. They show you the contract under stress: edge cases, error paths, race conditions the maintainers have already thought about. Where the tests are confused or absent, the source code beneath is usually confused too — that is a signal to slow down. Open the test directory before opening source. Read the file names; they describe the surface area in one pass. When you find the test that maps to your bug, you find the spec for the fix without having to derive it from the implementation. You learn faster from a well-named failing test than from a hundred lines of production code with no surrounding context.
+
+## 2 — `git blame` is your friend
+
+The "why" lives in the commit message, not the code comment. Comments rot. Commit messages do not. When a line looks weird — a defensive `if`, an oddly specific magic number, a workaround for a library quirk — blame it. You will usually find `fix #1234` or `revert from X because Y broke for Z`. Track the issue thread back; the constraint nobody documented is in there. The git history is the longest-running design doc most projects have. Treat it like one. A ten-minute archaeology session through blame and linked issues has saved me from reopening closed bugs more times than I can count.
+
+## 3 — Find the smallest test that fails
+
+Bisect your way to a minimal repro. A fix without a failing test is theatre — even when it works in your environment, the maintainer cannot tell why, and your future self cannot remember why. The minimal repro becomes the regression test, becomes the proof the bug is fixed, becomes the artifact of your understanding. Five lines of test plus three lines of fix lands faster than a 50-line conjecture. The hardest part of the PR is convincing yourself the bug is real and isolated; once you have that, the fix follows. Maintainers merge what they can verify; the test is the verification.
+
+## 4 — Match the maintainer's voice
+
+Read their issue replies, their PR reviews, their CHANGELOG entries. Notice how they write commits, how they name variables, how they comment. Match it. Your PR should sound like it belongs in the project, not like an outsider passing through. This is not sycophancy — it is reducing friction between "outsider PR" and "merge candidate." The maintainer is one person with limited time. The closer your work reads to theirs, the less mental tax to merge it. A PR that looks foreign, even a technically correct one, earns a longer review queue and more rounds of style requests before it lands.
+
+## 5 — Tiny PR > big PR
+
+One fix, one file, one test. Maintainers triage by time-to-decide. A 5-line PR with a clear failing test gets merged in a week. A 200-line refactor sits for months while everyone waits for "someone with context" to look at it. If you have five fixes, ship five PRs. If your fix touches five files, you have five PRs disguised as one — split them. Each PR carries its own merge risk; smaller PRs distribute that risk into bite-sized decisions the maintainer can actually make. The goal is not to minimize the number of PRs you open. It is to maximize the number that close.
+
+## Closing
+
+Every merged PR shaves a thin layer off your blind spots in that project. After PR 50 in a single ecosystem, you stop reading code and start scanning for shape. You know where the bug must live before you have read the file. That muscle is not transferable across projects, but it grows fast within one. Pick a project you depend on and start.

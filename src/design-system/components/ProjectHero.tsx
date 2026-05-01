@@ -1,4 +1,7 @@
+'use client';
+
 import { ArrowUpRight } from 'lucide-react';
+import { motion, useReducedMotion } from 'framer-motion';
 import { Badge } from '@/design-system/components/Badge';
 import type { ProjectFrontmatter } from '@/lib/mdx';
 
@@ -20,6 +23,8 @@ const statusLabel: Record<ProjectFrontmatter['status'], string> = {
 };
 
 export function ProjectHero({ frontmatter }: { frontmatter: ProjectFrontmatter }) {
+  const reduce = useReducedMotion();
+
   return (
     <header className="space-y-6">
       <div className="flex flex-wrap items-center gap-2 text-xs">
@@ -35,13 +40,16 @@ export function ProjectHero({ frontmatter }: { frontmatter: ProjectFrontmatter }
       <p className="max-w-3xl text-lg text-[var(--muted)]">{frontmatter.summary}</p>
 
       <div className="flex flex-wrap gap-1.5">
-        {frontmatter.tech.map((t) => (
-          <span
+        {frontmatter.tech.map((t, i) => (
+          <motion.span
             key={t}
+            initial={reduce ? false : { opacity: 0, x: -8 }}
+            animate={reduce ? undefined : { opacity: 1, x: 0 }}
+            transition={reduce ? undefined : { delay: 0.04 * i, duration: 0.3, ease: 'easeOut' }}
             className="rounded-md border border-[var(--border)] px-2 py-0.5 font-mono text-[11px] text-[var(--muted)]"
           >
             {t}
-          </span>
+          </motion.span>
         ))}
       </div>
 

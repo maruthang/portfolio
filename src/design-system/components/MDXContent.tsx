@@ -2,14 +2,14 @@ import { MDXRemote } from 'next-mdx-remote/rsc';
 import remarkGfm from 'remark-gfm';
 import rehypePrettyCode from 'rehype-pretty-code';
 import type { ComponentProps } from 'react';
+import { RevealHeading } from '@/design-system/components/RevealHeading';
+import { RevealCodeBlock } from '@/design-system/components/RevealCodeBlock';
 
 const mdxComponents = {
   h1: (props: ComponentProps<'h1'>) => (
     <h1 className="mt-12 font-mono text-3xl font-bold sm:text-4xl" {...props} />
   ),
-  h2: (props: ComponentProps<'h2'>) => (
-    <h2 className="mt-10 font-mono text-2xl font-bold sm:text-3xl" {...props} />
-  ),
+  h2: RevealHeading,
   h3: (props: ComponentProps<'h3'>) => (
     <h3 className="mt-8 font-mono text-xl font-semibold" {...props} />
   ),
@@ -43,12 +43,7 @@ const mdxComponents = {
       {...props}
     />
   ),
-  pre: (props: ComponentProps<'pre'>) => (
-    <pre
-      className="mt-4 overflow-x-auto rounded-lg border border-[var(--border)] bg-[var(--surface)] p-4 text-sm leading-relaxed"
-      {...props}
-    />
-  ),
+  pre: RevealCodeBlock,
   hr: () => <hr className="my-12 border-[var(--border)]" />,
 };
 

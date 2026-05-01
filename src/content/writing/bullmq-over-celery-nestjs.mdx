@@ -1,0 +1,67 @@
+---
+title: 'Why I picked BullMQ over Celery for a NestJS analytics platform'
+description: 'Picking the queue picks the operational shape of the whole system. Here is why a TypeScript-native one beat the obvious cross-language default.'
+date: '2026-04-15'
+slug: 'bullmq-over-celery-nestjs'
+tags:
+  - nestjs
+  - queues
+  - bullmq
+---
+
+We were building an analytics platform that needed to ingest data from eight different sources. Each source had its own cadence — some hourly, some daily, some triggered on demand by the user. Failures had to retry with backoff. Dashboards expected live progress updates as jobs ran. The queue you pick at that point is not a library choice. It decides the operational shape of the whole system: which language your workers run in, how you observe failures, and who can actually debug a stuck job at 3am.
+
+## Why not Celery
+
+Celery is the default answer in a lot of engineering circles when someone says "I need a queue." It is mature, well-documented, and battle-tested at scale. But it carries a hidden tax the moment your primary stack is not Python.
+
+We were already running NestJS. Adding Celery meant a separate Python runtime, a separate set of dependencies to manage and update, a separate observability stack, and a custom RPC or shared message format for queue events to cross the language boundary. At deploy time that becomes two language ecosystems, two monitoring dashboards, two sets of on-call runbooks.
+
+The team would have spent roughly a week every quarter on Python infrastructure nobody wanted to own. That is not a trade-off worth making when the problem is queue coordination, not natural language processing or scientific computing — domains where Python earns its seat at the table.
+
+## Why BullMQ
+
+BullMQ is Redis-backed, first-class TypeScript, and integrates cleanly into NestJS via `@nestjs/bullmq`. The job options surface the exact primitives we cared about: retries with exponential backoff, deduplication by job id, repeat schedules, delayed enqueue, and `removeOnComplete` / `removeOnFail` to keep the Redis memory footprint bounded. `QueueEvents` gives us a live event stream the dashboard can subscribe to. The entire story stays inside the same process model the rest of the app uses.
+
+The module configuration is straightforward:
+
+```ts
+// app.module.ts
+import { BullModule } from '@nestjs/bullmq';
+
+BullModule.forRoot({
+  connection: { host: env.REDIS_HOST, port: env.REDIS_PORT },
+  defaultJobOptions: {
+    attempts: 5,
+    backoff: { type: 'exponential', delay: 2_000 },
+    removeOnComplete: { age: 3600, count: 1000 },
+    removeOnFail: { age: 86_400 },
+  },
+});
+```
+
+Setting `removeOnComplete` with both `age` and `count` means Redis holds at most 1000 completed jobs and discards anything older than an hour, regardless. Failed jobs are retained for 24 hours for post-mortem, then cleaned automatically. That keeps a long-running platform from accumulating unbounded state in Redis without needing a separate cleanup cron.
+
+Everything downstream — processors, queue event listeners, the Bull Board admin UI — speaks the same TypeScript the rest of the codebase speaks. One language, one mental model, one on-call runbook.
+
+## Trade-offs accepted
+
+No tool is free. Here is what we accepted:
+
+Redis becomes a critical-path service. A queue host outage stalls all ingestion, not just one source. We run Redis with replication and accept the small write latency that comes with it. This was the right call for our availability requirements, but it means Redis is now load-bearing infrastructure, not an optional cache.
+
+Cross-time-zone repeat scheduling is your problem to solve in application code. BullMQ's `repeat` option works against wall-clock intervals and does not understand DST transitions. If you need to run a job at "9am in every user's local timezone," you build that logic yourself on top of the scheduler.
+
+Durability is Redis AOF. If you need ACID-grade job persistence — where a crash between enqueue and processing must never silently drop a job — a Postgres-backed queue (pgmq, Graphile Worker) or a managed offering like Google Cloud Tasks is the right answer. For our use case, AOF with fsync was acceptable.
+
+## What I'd do differently
+
+Run a dedicated Redis instance for queues, separate from the application cache. We discovered late that a busy ingestion run could push cache reads into timeout territory on shared infrastructure. The fix was straightforward, but the migration took a sprint we did not budget for.
+
+Wire dead-letter queue handling on day one. We added it after the third silent-failure incident, each time spending hours retracing a job that vanished between retries. The `@nestjs/bullmq` worker decorator supports a `failed` event handler; using it from the start costs nothing.
+
+Add Bull Board behind authentication from the beginning, not as a "later" task. The first time you watch a stuck job in the queue UI and can immediately see its data, its retry count, and its error stack, the hour it took to wire up auth pays for itself.
+
+## Closing
+
+If your stack already speaks TypeScript, BullMQ removes one language frontier from your operational surface. The right queue is the one your team can actually debug at 3am. Choose for the team you have, not the one you wish you had.
