@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { personSchema, breadcrumbListSchema } from '@/lib/jsonld';
+import { personSchema, breadcrumbListSchema, blogPostingSchema } from '@/lib/jsonld';
 
 describe('personSchema', () => {
   it('builds a JSON-LD Person object with the given identity', () => {
@@ -30,5 +30,22 @@ describe('breadcrumbListSchema', () => {
       item: 'https://example.com/',
     });
     expect(json.itemListElement[1]?.position).toBe(2);
+  });
+});
+
+describe('blogPostingSchema', () => {
+  it('builds a JSON-LD BlogPosting with required fields', () => {
+    const json = blogPostingSchema({
+      headline: 'Hello',
+      description: 'A post',
+      url: 'https://example.com/writing/hello',
+      datePublished: '2026-01-01',
+      authorName: 'Jane Doe',
+    });
+    expect(json['@type']).toBe('BlogPosting');
+    expect(json.headline).toBe('Hello');
+    expect(json.url).toBe('https://example.com/writing/hello');
+    expect(json.datePublished).toBe('2026-01-01');
+    expect(json.author).toEqual({ '@type': 'Person', name: 'Jane Doe' });
   });
 });

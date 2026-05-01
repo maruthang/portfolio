@@ -33,3 +33,24 @@ export function breadcrumbListSchema(crumbs: Crumb[]) {
     })),
   };
 }
+
+export interface BlogPostingInput {
+  headline: string;
+  description: string;
+  url: string;
+  datePublished: string; // ISO date
+  authorName: string;
+}
+
+export function blogPostingSchema(input: BlogPostingInput) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: input.headline,
+    description: input.description,
+    url: input.url,
+    datePublished: input.datePublished,
+    author: { '@type': 'Person' as const, name: input.authorName },
+    mainEntityOfPage: { '@type': 'WebPage' as const, '@id': input.url },
+  };
+}

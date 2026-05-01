@@ -6,7 +6,7 @@ import { ArrowLeft } from 'lucide-react';
 import { getPostMDX, getAllPostSlugs, estimateReadingTimeMinutes } from '@/lib/writing';
 import { MDXContent } from '@/design-system/components/MDXContent';
 import { Breadcrumbs } from '@/design-system/components/Breadcrumbs';
-import { breadcrumbListSchema } from '@/lib/jsonld';
+import { breadcrumbListSchema, blogPostingSchema } from '@/lib/jsonld';
 
 export const dynamicParams = false;
 
@@ -56,6 +56,21 @@ export default async function PostPage({ params }: { params: Promise<{ slug: str
         id={`ld-bc-writing-${slug}`}
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbListSchema(crumbs)) }}
+      />
+      <Script
+        id={`ld-blogpost-${slug}`}
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            blogPostingSchema({
+              headline: data.frontmatter.title,
+              description: data.frontmatter.description,
+              url: `${siteUrl}/writing/${slug}`,
+              datePublished: data.frontmatter.date,
+              authorName: 'Maruthan G',
+            }),
+          ),
+        }}
       />
       <Breadcrumbs items={[{ label: 'Writing', href: '/writing' }, { label: data.frontmatter.title }]} />
       <header className="space-y-4">
